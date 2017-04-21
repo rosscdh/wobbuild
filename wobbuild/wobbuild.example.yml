@@ -7,10 +7,21 @@ repo:
 
 clean: false
 
-before_steps: null
-  - n v7.5.0
-  - cd patternlab;npm install
+before_steps:
+  - echo "Message to slack"
+  # - n v7.5.0
+  # - cd patternlab;npm install
 
-steps:
-  - cd patternlab;npm pack
+final_steps:
+  - echo "Message to slack"
+
+build:
+  do: true
+  steps:
+    - cd patternlab;npm test
+
+deploy:
+  do: false
+  steps:
+    - echo "Upload to artifactory"
 

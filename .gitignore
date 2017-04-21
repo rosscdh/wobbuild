@@ -20,6 +20,7 @@ composer.lock
 ._*
 .DS_Store
 .idea*
+*.log
 config/*
 media/*
 static/*

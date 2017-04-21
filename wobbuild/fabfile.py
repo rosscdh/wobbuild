@@ -1,5 +1,4 @@
 import os
-import yaml
 import pprint
 
 from app_logger import logger
@@ -9,12 +8,7 @@ from jinja2 import Template
 from fabric.api import task
 
 from builder.handler import perform_pipeline
-
-BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-GLOBAL_VARS = yaml.load(open(os.path.join(BASE_PATH, 'vars/global.yml'), 'r').read())
-GLOBAL_VARS.update({
-    'BASE_PATH': BASE_PATH,
-})
+from wobbuild.settings import GLOBAL_VARS
 
 
 def perform(pipeline_yaml):

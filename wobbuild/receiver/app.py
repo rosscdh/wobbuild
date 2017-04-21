@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 
-from ..app_logger import gelf_handler
-from ..fabfile import perform
+from wobbuild.app_logger import gelf_handler
+from wobbuild.fabfile import perform
 
 app = Flask(__name__)
 
