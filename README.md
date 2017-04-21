@@ -13,3 +13,4 @@ Yet another simple build and deploy system
 
 
 1. http POST http://localhost:5000 < wobbuild/wobbuild.example.yml
+2. this will turn into a command like `coconut build` which will then look for the wobbuild.yml and send it to the receiver endpoint
