@@ -2,6 +2,9 @@ bootstrap:
 	ansible-galaxy install -r requirements.yml
 	vagrant up
 
+models:
+	vagrant ssh -c 'cd /vagrant/wobbuild;source ../virtualenv/bin/activate;python receiver/make_models.py'
+
 start:
 	vagrant ssh -c 'cd /vagrant/;source ./virtualenv/bin/activate;./virtualenv/bin/honcho start'
 
