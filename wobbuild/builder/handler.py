@@ -18,9 +18,7 @@ celery_app = Celery('tasks',
 def perform_pipeline(context, pipeline_template):
     pipeline = yaml.load(pipeline_template)
 
-    #BASE_PATH = pipeline.get('BASE_PATH')
-
-    pprint.pprint(pipeline)
+    logger.debug('pipeline yaml', {'pipeline': pipeline})
 
     builds_path = context.get('builds_path')
 
