@@ -9,7 +9,8 @@ repo:
 clean: false
 
 before_steps: null
+  - cd patternlab;npm install
 
 steps:
-  - cd patternlab;npm install;npm pack
+  - cd patternlab;npm pack
 

@@ -1,3 +1,3 @@
 worker: celery -A builder.handler worker --loglevel=debug
 flower: celery flower -A builder.handler --broker=redis://192.168.99.100:32814/0 --backend=redis://192.168.99.100:32814/1
-receiver: FLASK_APP=reciever/app.py flask run
+receiver: FLASK_APP=receiver/app.py flask run
