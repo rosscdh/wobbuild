@@ -5,6 +5,12 @@ bootstrap:
 start:
 	vagrant ssh -c 'cd /vagrant/;source ./virtualenv/bin/activate;./virtualenv/bin/honcho start'
 
+worker:
+	vagrant ssh -c 'cd /vagrant/;source ./virtualenv/bin/activate;./virtualenv/bin/honcho start worker'
+
+web:
+	vagrant ssh -c 'cd /vagrant/;source ./virtualenv/bin/activate;./virtualenv/bin/honcho start web'
+
 post:
 	http POST http://192.168.50.5:5000 < wobbuild/wobbuild.example.yml
 

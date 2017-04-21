@@ -1,12 +1,16 @@
 import os
 import yaml
-import pprint
+import uuid
+#import pprint
 
 from celery import Celery
 
 from fabric.api import lcd, local
+
 from wobbuild.settings import GLOBAL_VARS
 from wobbuild.app_logger import logger
+
+from wobbuild.receiver.models import Project, Build
 
 
 celery_app = Celery('tasks',
@@ -19,6 +23,15 @@ def perform_pipeline(context, pipeline_template):
     pipeline = yaml.load(pipeline_template)
 
     logger.debug('pipeline yaml', {'pipeline': pipeline})
+
+    repo = pipeline.get('repo', {})
+    project, is_new = Project.get_or_create(name=repo.get('name'))
+    project.data = repo
+    project.save()
+
+    build, is_new = Build.get_or_create(project=project, slug=str(uuid.uuid4())[:8])
+    build.pipeline = pipeline
+    build.save()
 
     builds_path = context.get('builds_path')
 
