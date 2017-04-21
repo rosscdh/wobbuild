@@ -1,4 +1,3 @@
-# see http://about.travis-ci.org/docs/user/languages/php/ for more hints
 language: java
 
 repo:
@@ -9,6 +8,7 @@ repo:
 clean: false
 
 before_steps: null
+  - n v7.5.0
   - cd patternlab;npm install
 
 steps:

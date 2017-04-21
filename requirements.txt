@@ -11,6 +11,7 @@ click==6.7
 coreapi==2.3.0
 coreschema==0.0.4
 cryptography==1.8.1
+djehouty==0.1.4
 enum34==1.1.6
 Fabric==1.13.1
 Flask==0.12.1
@@ -23,6 +24,7 @@ itsdangerous==0.24
 itypes==1.1.0
 Jinja2==2.9.6
 kombu==4.0.2
+ltsv==0.0.5
 MarkupSafe==1.0
 packaging==16.8
 paramiko==2.1.2
@@ -37,6 +39,7 @@ PyYAML==3.12
 redis==2.10.5
 requests==2.13.0
 six==1.10.0
+testfixtures==4.13.5
 tornado==4.2
 ujson==1.35
 uritemplate==3.0.0

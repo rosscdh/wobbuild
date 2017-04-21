@@ -4,8 +4,6 @@ import pprint
 
 from celery import Celery
 
-from jinja2 import Template
-
 from fabric.api import lcd, local
 
 celery_app = Celery('tasks',
@@ -16,10 +14,14 @@ celery_app = Celery('tasks',
 @celery_app.task
 def perform_pipeline(context, pipeline_template):
     pipeline = yaml.load(pipeline_template)
-    BASE_PATH = pipeline.get('BASE_PATH')
+
+    #BASE_PATH = pipeline.get('BASE_PATH')
+
     pprint.pprint(pipeline)
 
-    builds_path = os.path.join(BASE_PATH, 'builds')
+    builds_path = context.get('builds_path')
+    local('mkdir -p {builds_path}'.format(builds_path=builds_path))
+
     the_build_path = os.path.join(builds_path, pipeline.get('repo').get('name'))
 
     repo = pipeline.get('repo', {})
@@ -36,12 +38,14 @@ def perform_pipeline(context, pipeline_template):
     with lcd(the_build_path):
         local('git checkout {branch}'.format(branch=repo.get('branch')))
 
+    for step in pipeline.get('before_steps'):
+        perform_step(path=the_build_path, step=step)
+
     for step in pipeline.get('steps'):
         perform_step(path=the_build_path, step=step)
 
 
-@celery_app.task
-def perform_step(the_build_path, step):
+def perform_step(path, step):
     #print 'cd {the_build_path}'.format(the_build_path=the_build_path)
-    with lcd(the_build_path):
+    with lcd(path):
         return local(step)
