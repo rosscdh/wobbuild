@@ -1,0 +1,15 @@
+# see http://about.travis-ci.org/docs/user/languages/php/ for more hints
+language: java
+
+repo:
+  name: rwd-douglas-pattern
+  url: ssh://git@git.dglecom.net:7999/fron/rwd-douglas-pattern.git
+  branch: doc/packaging-deploy
+
+clean: false
+
+before_steps: null
+
+steps:
+  - cd patternlab;npm install;npm pack
+
