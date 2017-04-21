@@ -50,14 +50,16 @@ def perform_pipeline(context, pipeline_template):
         perform_step(path=the_build_path, step=step)
 
     build = pipeline.get('build', {})
-    for step in build.get('steps', []):
-        logger.info('perform build.step', {'step': step})
-        perform_step(path=the_build_path, step=step)
+    if build.get('do') is True:
+        for step in build.get('steps', []):
+            logger.info('perform build.step', {'step': step})
+            perform_step(path=the_build_path, step=step)
 
     deploy = pipeline.get('deploy', {})
-    for step in deploy.get('steps', []):
-        logger.info('perform deploy.step', {'step': step})
-        perform_step(path=the_build_path, step=step)
+    if deploy.get('do') is True:
+        for step in deploy.get('steps', []):
+            logger.info('perform deploy.step', {'step': step})
+            perform_step(path=the_build_path, step=step)
 
     for step in pipeline.get('final_steps', []):
         logger.info('perform final_steps', {'step': step})

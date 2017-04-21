@@ -19,6 +19,7 @@ build:
   do: true
   steps:
     - cd patternlab;npm test
+    - cd patternlab;npm publish
 
 deploy:
   do: false
