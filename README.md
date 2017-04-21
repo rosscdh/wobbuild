@@ -18,7 +18,8 @@ OR
 ### Using it
 
 
-1. `make post`
+1. `make run`  __starts the services__
+2. `make post` __http posts a test yml file__
 
 OR
 
