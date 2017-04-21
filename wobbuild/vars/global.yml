@@ -2,5 +2,5 @@ author: Ross
 version: 0.0.1
 builds_path: /tmp/wobbuild
 redis:
-  backend: redis://192.168.99.100:32814/1
-  broker: redis://192.168.99.100:32814/0
+  backend: redis://localhost:6379/1
+  broker: redis://localhost:6379/0

@@ -1,0 +1,66 @@
+#
+# Data
+#
+server {
+    listen 80 default_server;
+
+    server_name 192.168.50.4 colorglam.local;
+
+    root {{ document_root }}/colorglam;
+    charset utf-8;
+
+    location /m {
+        access_log off;
+        autoindex on;
+        #expires 30d;
+        alias {{ document_root }}/media;
+    }
+
+    location /s {
+        access_log off;
+        autoindex on;
+        #expires 30d;
+        alias {{ document_root }}/static;
+    }
+
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+
+        proxy_pass http://localhost:8000/;
+    }
+
+    error_log /var/log/nginx/error-colorglam.log;
+    access_log /var/log/nginx/access-colorglam.log;
+}
+
+server {
+    listen 80;
+
+    server_name html-dist.colorglam.local;
+
+    root {{ document_root }}/html-dist;
+    charset utf-8;
+
+    location /m {
+        access_log off;
+        autoindex on;
+        #expires 30d;
+        alias {{ document_root }}/html-dist/m;
+    }
+
+    location /s {
+        access_log off;
+        autoindex on;
+        #expires 30d;
+        alias {{ document_root }}/html-dist/s;
+    }
+
+    location / {
+           autoindex on;
+    }
+
+    error_log /var/log/nginx/error-colorglam.log;
+    access_log /var/log/nginx/access-colorglam.log;
+}

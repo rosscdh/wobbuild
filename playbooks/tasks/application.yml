@@ -1,0 +1,37 @@
+---
+
+- name: Copy across new virtual host
+  template:
+    src=nginx/application.conf.j2
+    dest=/etc/nginx/conf.d/{{ application_name }}.conf
+  notify:
+    - restart nginx
+  tags:
+    - nginx
+    - setup
+
+- name: Copy across new .htpasswd
+  template:
+    src=nginx/.htpasswd
+    dest=/etc/nginx/.htpasswd
+  notify:
+    - restart nginx
+  tags:
+    - nginx
+    - setup
+
+- name: Creates directories
+  file: path={{ document_root }}/{{ item }} state=directory recurse=yes
+  with_items:
+    - virtualenv
+  tags:
+    - paths
+    - setup
+
+- name: Install requirements
+  pip:
+    requirements: "{{ document_root }}/requirements.txt"
+    virtualenv: "{{ document_root }}/virtualenv"
+  tags:
+    - requirements
+    - setup

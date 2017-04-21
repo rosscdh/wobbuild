@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: true
+  vars:
+    application_name: wobbuild
+    document_root: /vagrant
+    www_user: vagrant
+    www_group: vagrant
+  vars_files:
+    - vars/postgres.yml
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted
+    - name: restart {{ application_name }}
+      service: name={{ application_name }} state=restarted
+  # pre_tasks:
+  #   - name: update apt cache
+  #     apt: update_cache=yes
+  roles:
+    # - ANXS.postgresql
+    - DavidWittman.redis
+  tasks:
+    - include: tasks/base.yml
+    - include: tasks/nginx.yml
+    - include: tasks/application.yml
