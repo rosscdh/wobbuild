@@ -21,7 +21,6 @@
     - ANXS.postgresql
     - DavidWittman.redis
     - kosssi.gitconfig
-    - Graylog2.graylog-ansible-role
 
   tasks:
     - include: tasks/base.yml
