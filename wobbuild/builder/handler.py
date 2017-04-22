@@ -36,7 +36,8 @@ def perform_pipeline(context, pipeline_template):
     builds_path = context.get('builds_path')
 
     logger.debug('create builds path', {'builds_path': builds_path})
-    local('mkdir -p {builds_path}'.format(builds_path=builds_path))
+    res = local('mkdir -p {builds_path}'.format(builds_path=builds_path), capture=True)
+    log_step(build, res)
 
     the_build_path = os.path.join(builds_path, pipeline.get('repo').get('name'), 'repo')
 
@@ -44,40 +45,79 @@ def perform_pipeline(context, pipeline_template):
 
     if pipeline.get('clean') is True:
         logger.info('clean build path', {'builds_path': builds_path})
-        local('rm -Rf {the_build_path}'.format(the_build_path=the_build_path))
+        res = local('rm -Rf {the_build_path}'.format(the_build_path=the_build_path), capture=True)
+        log_step(build, res)
 
     if not os.path.exists(the_build_path):
         with lcd(builds_path):
             if not os.path.exists(the_build_path):
                 logger.info('clone repository', {'the_build_path': the_build_path, 'repo': repo})
-                local('git clone {url} {the_build_path}'.format(url=repo.get('url'), the_build_path=the_build_path))
+                res = local('git clone {url} {the_build_path}'.format(url=repo.get('url'), the_build_path=the_build_path), capture=True)
+                log_step(build, res)
 
     with lcd(the_build_path):
         logger.info('checkout branch', {'the_build_path': the_build_path})
-        local('git checkout {branch}'.format(branch=repo.get('branch')))
+        res = local('git checkout {branch}'.format(branch=repo.get('branch')), capture=True)
+        log_step(build, res)
 
+    for r in before_steps(pipeline, the_build_path):
+        log_step(build, r)
+
+    for r in build_steps(pipeline, the_build_path):
+        log_step(build, r)
+
+    for r in publish_steps(pipeline, the_build_path):
+        log_step(build, r)
+
+    if pipeline.get('deploy', False) is True:
+        for r in deploy_steps(pipeline, the_build_path):
+            log_step(build, r)
+
+    for r in final_steps(pipeline, the_build_path):
+        log_step(build, r)
+
+
+def before_steps(pipeline, the_build_path):
     for step in pipeline.get('before_steps', []):
         logger.info('perform before_step', {'step': step})
-        perform_step(path=the_build_path, step=step)
+        yield perform_step(path=the_build_path, step=step)
 
+
+def build_steps(pipeline, the_build_path):
     build = pipeline.get('build', {})
     if build.get('do') is True:
         for step in build.get('steps', []):
             logger.info('perform build.step', {'step': step})
-            perform_step(path=the_build_path, step=step)
+            yield perform_step(path=the_build_path, step=step)
 
+
+def publish_steps(pipeline, the_build_path):
+    publish = pipeline.get('publish', {})
+    if publish.get('do') is True:
+        for step in publish.get('steps', []):
+            logger.info('perform publish.step', {'step': step})
+            yield perform_step(path=the_build_path, step=step)
+
+
+def deploy_steps(pipeline, the_build_path):
     deploy = pipeline.get('deploy', {})
     if deploy.get('do') is True:
         for step in deploy.get('steps', []):
             logger.info('perform deploy.step', {'step': step})
-            perform_step(path=the_build_path, step=step)
+            yield perform_step(path=the_build_path, step=step)
 
+
+def final_steps(pipeline, the_build_path):
     for step in pipeline.get('final_steps', []):
         logger.info('perform final_steps', {'step': step})
-        perform_step(path=the_build_path, step=step)
+        yield perform_step(path=the_build_path, step=step)
 
 
 def perform_step(path, step):
     #print 'cd {the_build_path}'.format(the_build_path=the_build_path)
     with lcd(path):
-        return local(step)
+        return local(step, capture=True)
+
+
+def log_step(build, result):
+    return result
