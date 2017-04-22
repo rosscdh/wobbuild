@@ -37,11 +37,10 @@ Vagrant.configure(2) do |config|
     ansible.extra_vars = {
     }
   end
+  config.vm.provision :shell, :inline => "echo -e '#{File.read("#{Dir.home}/.gitconfig")}' > '/home/vagrant/.gitconfig'"
 
-  config.vm.network "forwarded_port", guest: 8280, host: 8280
-  
+  config.vm.network "forwarded_port", guest: 8280, host: 8280  
   config.vm.network "private_network", ip: "192.168.50.5"
-
   config.ssh.forward_agent    = true
 
   config.vm.provision :shell, privileged: false do |s|

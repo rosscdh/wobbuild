@@ -38,7 +38,7 @@ def perform_pipeline(context, pipeline_template):
     logger.debug('create builds path', {'builds_path': builds_path})
     local('mkdir -p {builds_path}'.format(builds_path=builds_path))
 
-    the_build_path = os.path.join(builds_path, pipeline.get('repo').get('name'))
+    the_build_path = os.path.join(builds_path, pipeline.get('repo').get('name'), 'repo')
 
     repo = pipeline.get('repo', {})
 
@@ -50,7 +50,7 @@ def perform_pipeline(context, pipeline_template):
         with lcd(builds_path):
             if not os.path.exists(the_build_path):
                 logger.info('clone repository', {'the_build_path': the_build_path, 'repo': repo})
-                local('git clone {url} .'.format(url=repo.get('url')))
+                local('git clone {url} {the_build_path}'.format(url=repo.get('url'), the_build_path=the_build_path))
 
     with lcd(the_build_path):
         logger.info('checkout branch', {'the_build_path': the_build_path})
