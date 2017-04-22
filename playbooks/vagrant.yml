@@ -7,7 +7,8 @@
     www_user: vagrant
     www_group: vagrant
   vars_files:
-    - vars/postgres.yml
+    # - vars/postgres.yml
+    - vars/gitconfig.yml
   handlers:
     - name: restart nginx
       service: name=nginx state=restarted
@@ -19,6 +20,8 @@
   roles:
     # - ANXS.postgresql
     - DavidWittman.redis
+    - kosssi.gitconfig
+
   tasks:
     - include: tasks/base.yml
     - include: tasks/nginx.yml

@@ -50,7 +50,7 @@ def perform_pipeline(context, pipeline_template):
         with lcd(builds_path):
             if not os.path.exists(the_build_path):
                 logger.info('clone repository', {'the_build_path': the_build_path, 'repo': repo})
-                local('git clone {url}'.format(url=repo.get('url')))
+                local('git clone {url} .'.format(url=repo.get('url')))
 
     with lcd(the_build_path):
         logger.info('checkout branch', {'the_build_path': the_build_path})
