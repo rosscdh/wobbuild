@@ -69,9 +69,8 @@ def perform_pipeline(context, pipeline_template):
     for r in publish_steps(pipeline, the_build_path):
         log_step(build, r)
 
-    if pipeline.get('deploy', False) is True:
-        for r in deploy_steps(pipeline, the_build_path):
-            log_step(build, r)
+    for r in deploy_steps(pipeline, the_build_path):
+        log_step(build, r)
 
     for r in final_steps(pipeline, the_build_path):
         log_step(build, r)
@@ -120,4 +119,5 @@ def perform_step(path, step):
 
 
 def log_step(build, result):
+    print(result)
     return result
