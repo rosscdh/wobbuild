@@ -4,6 +4,16 @@ import uuid
 #import pprint
 
 from celery import Celery
+from celery.signals import (before_task_publish,
+                            after_task_publish,
+                            task_prerun,
+                            task_postrun,
+                            task_retry,
+                            task_success,
+                            task_failure,
+                            task_revoked,
+                            task_unknown,
+                            task_rejected,)
 
 from fabric.api import lcd, local
 
@@ -18,10 +28,11 @@ celery_app = Celery('tasks',
                     broker=GLOBAL_VARS.get('redis').get('broker'))
 
 
-@celery_app.task
-def perform_pipeline(context, pipeline_template):
+@celery_app.task(bind=True)
+def perform_pipeline(self, context, pipeline_template):
     pipeline = yaml.load(pipeline_template)
 
+    logger.info('Celery Task: %s' % self.request.id)
     logger.debug('pipeline yaml', {'pipeline': pipeline})
 
     repo = pipeline.get('repo', {})
@@ -29,15 +40,15 @@ def perform_pipeline(context, pipeline_template):
     project.data = repo
     project.save()
 
-    build, is_new = Build.get_or_create(project=project, slug=str(uuid.uuid4())[:8])
+    build, is_new = Build.get_or_create(project=project, slug=str(self.request.id))
     build.pipeline = pipeline
     build.save()
 
     builds_path = context.get('builds_path')
 
-    logger.debug('create builds path', {'builds_path': builds_path})
+    logger.debug('create builds path: {builds_path}', {'builds_path': builds_path})
     res = local('mkdir -p {builds_path}'.format(builds_path=builds_path), capture=True)
-    log_step(build, res)
+    #log_step(build, res)
 
     the_build_path = os.path.join(builds_path, pipeline.get('repo').get('name'), 'repo')
 
@@ -119,5 +130,15 @@ def perform_step(path, step):
 
 
 def log_step(build, result):
-    print(result)
+    logs = build.step_logs.get('logs', [])
+    logs.append(result.stdout or result.stderr)
+    build.step_logs['logs'] = logs
+    build.save()
     return result
+
+
+@task_failure.connect
+def task_failure_handler(sender=None, headers=None, body=None, **kwargs):
+    # information about task are located in headers for task messages
+    # using the task protocol version 2.
+    print kwargs

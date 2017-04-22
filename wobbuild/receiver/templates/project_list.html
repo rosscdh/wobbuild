@@ -1,39 +1,44 @@
 {% extends 'base.html' %}
 
 {% block projects %}
-<div id="list" class="pure-u-1">
-{% for row in project_list %}
-    <div class="email-item email-item-selected pure-g">
-        <div class="pure-u">
-            <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" class="email-avatar" src="/img/common/tilo-avatar.png">
-        </div>
+    <div class="columns">
 
-        <div class="pure-u-3-4">
-            <h5 class="email-name">{{ row.name }}</h5>
-            <h4 class="email-subject">{{ row.data['url'] }}</h4>
-            <p class="email-desc">
-                <div id="" class="pure-u-1">
-                {% for build in row.builds %}
-                    <div class="email-item email-item-selected pure-g">
-                        <div class="pure-u">
-                            <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" class="email-avatar" src="/img/common/tilo-avatar.png">
-                        </div>
-
-                        <div class="pure-u-3-4">
-                            <h5 class="email-name">{{ build.dateof }}</h5>
-                            <h4 class="email-subject">{{ build.slug }}</h4>
-                            <p class="email-desc">
-                                
-                                {{ build.pipeline }}
-                                {{ build.logs }}
-                            </p>
-                        </div>
-                    </div>
-                {% endfor %}
-                </div>
+      {% for row in project_list %}
+      <div class="column is-4">
+        <div class="card">
+          <header class="card-header">
+            <p class="card-header-title">
+              {{ row.name }}
             </p>
+            <span class="card-header-icon timestamp">
+              2m
+            </span>
+          </header>
+          <div class="card-content">
+            {% for build in row.builds[:5] %}
+            <div class="panel-block-item">
+              <span class="likes">
+                <span class="icon">
+                  <i class="fa fa-heart"></i>
+                </span>
+                <small><a href="">{{ build.slug[:8] }}</a></small>
+              </span>
+              <span class="comments">
+              <small><a href="{{ build.pipeline.repo.url }}" target="_NEW">visit repo</a></small>
+              <p><b>branch:</b> {{ build.pipeline.repo.branch }}</p>
+              {{build.step_logs}}
+{#                 <span class="icon">
+                  <i class="fa fa-comment"></i>
+                </span> #}
+                <small>{{ build.dateof }}</small>
+              </span>
+            </div>
+            {% endfor %}
+          </div>
         </div>
+      </div>
+      {% endfor %}
     </div>
-{% endfor %}
+
 </div>
 {% endblock %}
