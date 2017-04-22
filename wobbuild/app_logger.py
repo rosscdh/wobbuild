@@ -3,8 +3,7 @@ import logging
 from djehouty.libgelf.handlers import GELFTCPSocketHandler
 from pip.utils.logging import BetterRotatingFileHandler
 formatter = logging.Formatter('%(asctime)s %(message)s')
-logging.basicConfig(format=FORMAT,
-                    datefmt='%m/%d/%Y %I:%M:%S %p')
+logging.basicConfig(datefmt='%m/%d/%Y %I:%M:%S %p')
 
 logger = logging.getLogger('wobbuild')
 logger.setLevel(logging.DEBUG)
