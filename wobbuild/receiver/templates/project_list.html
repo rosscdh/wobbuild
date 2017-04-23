@@ -22,31 +22,31 @@
               <em>Before steps</em>
               <ol>
               {% for s in build.step_logs.before_steps %}
-                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code> {{ s.took }}</li>
+                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
               {% endfor %}
               </ol>
               <em>Build steps</em>
               <ol>
               {% for s in build.step_logs.build_steps %}
-                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
               {% endfor %}
               </ol>
               <em>Publish steps</em>
               <ol>
               {% for s in build.step_logs.publish_steps %}
-                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
               {% endfor %}
               </ol>
               <em>Deploy steps</em>
               <ol>
               {% for s in build.step_logs.deploy_steps %}
-                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
               {% endfor %}
               </ol>
               <em>Final steps</em>
               <ol>
               {% for s in build.step_logs.final_steps %}
-                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
               {% endfor %}
               </ol>
             </p>
