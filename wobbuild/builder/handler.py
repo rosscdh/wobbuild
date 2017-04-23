@@ -1,4 +1,5 @@
 import os
+import timy
 import yaml
 import uuid
 #import pprint
@@ -71,20 +72,30 @@ def perform_pipeline(self, context, pipeline_template):
         res = local('git checkout {branch}'.format(branch=repo.get('branch')), capture=True)
         log_step(build, res)
 
-    for r in before_steps(pipeline, the_build_path):
-        log_step(build, r)
+    with timy.Timer() as timer:
+        for r in before_steps(pipeline, the_build_path):
+            log_step(build, r)
+    logger.info(timer)
 
-    for r in build_steps(pipeline, the_build_path):
-        log_step(build, r)
+    with timy.Timer() as timer:
+        for r in build_steps(pipeline, the_build_path):
+            log_step(build, r)
+    logger.info(timer)
 
-    for r in publish_steps(pipeline, the_build_path):
-        log_step(build, r)
+    with timy.Timer() as timer:
+        for r in publish_steps(pipeline, the_build_path):
+            log_step(build, r)
+    logger.info(timer)
 
-    for r in deploy_steps(pipeline, the_build_path):
-        log_step(build, r)
+    with timy.Timer() as timer:
+        for r in deploy_steps(pipeline, the_build_path):
+            log_step(build, r)
+    logger.info(timer)
 
-    for r in final_steps(pipeline, the_build_path):
-        log_step(build, r)
+    with timy.Timer() as timer:
+        for r in final_steps(pipeline, the_build_path):
+            log_step(build, r)
+    logger.info(timer)
 
 
 def before_steps(pipeline, the_build_path):
