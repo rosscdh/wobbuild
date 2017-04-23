@@ -2,20 +2,17 @@ bootstrap:
 	ansible-galaxy install -r requirements.yml
 	vagrant up
 
-models:
-	vagrant ssh -c 'cd /vagrant/wobbuild;source ../virtualenv/bin/activate;python receiver/make_models.py'
-
 start:
-	vagrant ssh -c 'cd /vagrant/;source ./virtualenv/bin/activate;./virtualenv/bin/honcho start'
+	vagrant ssh -c 'cd /vagrant/;source /vagrant/virtualenv/bin/activate;./virtualenv/bin/honcho start'
 
 worker:
-	vagrant ssh -c 'cd /vagrant/;source ./virtualenv/bin/activate;./virtualenv/bin/honcho start worker'
+	vagrant ssh -c 'cd /vagrant/;source /vagrant/virtualenv/bin/activate;./virtualenv/bin/honcho start worker'
 
 flower:
-	vagrant ssh -c 'cd /vagrant/;source ./virtualenv/bin/activate;./virtualenv/bin/honcho start flower'
+	vagrant ssh -c 'cd /vagrant/;source /vagrant/virtualenv/bin/activate;./virtualenv/bin/honcho start flower'
 
 web:
-	vagrant ssh -c 'cd /vagrant/;source ./virtualenv/bin/activate;./virtualenv/bin/honcho start web'
+	vagrant ssh -c 'cd /vagrant/;source /vagrant/virtualenv/bin/activate;./virtualenv/bin/honcho start web'
 
 wob:
 	#http POST http://192.168.50.5:5000 < $(path)

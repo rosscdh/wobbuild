@@ -13,7 +13,6 @@ Integrates with Salt so that deploy orchestration calls can be made
 1. pip install ansible
 2. install vagrant
 3. `make bootstrap`
-4. `make models`
 
 `npm install -g grommet-cli`
 

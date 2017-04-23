@@ -26,7 +26,7 @@ media/*
 static/*
 vendors/*
 bower_components/*
-node_modules/*
+node_modules/
 html-dist/*
 assets/*
 .vagrant/*

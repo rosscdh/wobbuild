@@ -55,7 +55,7 @@ def perform_pipeline(self, context, pipeline_template):
     project.data = repo
     project.save()
 
-    build, is_new = Build.get_or_create(project=project, slug=str(self.request.id))
+    build, is_new = Build.get_or_create(project=project, slug=str(self.request.id), status='created')
     build.pipeline = pipeline
     build.save()
 
@@ -174,14 +174,38 @@ def log_step(step_type, build_log, result, step, took):
     build_log[step_type].append(event)
 
 
+@task_success.connect
+def task_success_handler(sender=None, headers=None, body=None, **kwargs):
+    # information about task are located in headers for task messages
+    # using the task protocol version 2.
+    print 'SUCCESS:'
+    print sender.request.id
+    build = Build.get(Build.slug == sender.request.id)
+    print build
+    build.status = 'success'
+    build.save()
+    print kwargs
+
+
 @task_failure.connect
 def task_failure_handler(sender=None, headers=None, body=None, **kwargs):
     # information about task are located in headers for task messages
     # using the task protocol version 2.
+    print sender
+    build = Build.get(Build.slug == sender.request.id)
+    print build
+    build.status = 'failure'
+    build.save()
     print kwargs
+
 
 @task_rejected.connect
 def task_rejected_handler(sender=None, headers=None, body=None, **kwargs):
     # information about task are located in headers for task messages
     # using the task protocol version 2.
+    print sender
+    build = Build.get(Build.slug == sender.request.id)
+    print build
+    build.status = 'rejected'
+    build.save()
     print kwargs

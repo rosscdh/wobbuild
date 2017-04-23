@@ -4,7 +4,7 @@
     <div class="columns">
 
       {% for row in project_list %}
-      <div class="column is-4">
+      <div class="column is-10">
         <div class="card">
           <header class="card-header">
             <p class="card-header-title">
@@ -16,20 +16,48 @@
           </header>
           <div class="card-content">
             {% for build in row.builds[:5] %}
+            <h1>Build {{ build.id }}</h1>
             <div class="panel-block-item">
               <span class="likes">
                 <span class="icon">
-                  <i class="fa fa-heart"></i>
+                  <i class="fa fa-{{ build.status_icon }}"></i>
                 </span>
                 <small><a href="">{{ build.slug[:8] }}</a></small>
               </span>
               <span class="comments">
               <small><a href="{{ build.pipeline.repo.url }}" target="_NEW">visit repo</a></small>
               <p><b>branch:</b> {{ build.pipeline.repo.branch }}</p>
-              {{build.step_logs}}
-{#                 <span class="icon">
-                  <i class="fa fa-comment"></i>
-                </span> #}
+              <h3>Before steps</h3>
+              <ol>
+              {% for s in build.step_logs.before_steps %}
+              <li><b>-</b><em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+              {% endfor %}
+              </ol>
+              <h3>Build steps</h3>
+              <ol>
+              {% for s in build.step_logs.build_steps %}
+              <li><b>-</b><em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+              {% endfor %}
+              </ol>
+              <h3>Publish steps</h3>
+              <ol>
+              {% for s in build.step_logs.publish_steps %}
+              <li><b>-</b><em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+              {% endfor %}
+              </ol>
+              <h3>Deploy steps</h3>
+              <ol>
+              {% for s in build.step_logs.deploy_steps %}
+              <li><b>-</b><em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+              {% endfor %}
+              </ol>
+              <h3>Final steps</h3>
+              <ol>
+              {% for s in build.step_logs.final_steps %}
+              <li><b>-</b><em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+              {% endfor %}
+              </ol>
+
                 <small>{{ build.dateof }}</small>
               </span>
             </div>
@@ -42,3 +70,7 @@
 
 </div>
 {% endblock %}
+
+ 2f6b61b0 visit repo
+branch: master
+[u'publish_steps', u'system', u'build_steps', u'before_steps', u'final_steps', u'deploy_steps'] 
