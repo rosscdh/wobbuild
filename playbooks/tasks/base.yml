@@ -3,7 +3,6 @@
   with_items:
     - "@Development tools"
     - curl
-    - libgit2-devel
     - epel-release
     - libffi-devel
     - python-devel

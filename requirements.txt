@@ -48,3 +48,4 @@ Werkzeug==0.12.1
 flask-pw==1.0.3
 flask-classy
 timy==0.3.2
+gitpython==2.1.3
