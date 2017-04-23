@@ -17,10 +17,7 @@ flower:
 web:
 	vagrant ssh -c 'cd /vagrant/;source ./virtualenv/bin/activate;./virtualenv/bin/honcho start web'
 
-# post:
-# 	http POST http://192.168.50.5:5000 < wobbuild/wobbuild.example.yml
-
-post_path:
+post:
 	#http POST http://192.168.50.5:5000 < $(path)
 	fab -f client/fabfile.py build:$(path)
 
