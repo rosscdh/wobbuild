@@ -1,72 +1,71 @@
 {% extends 'base.html' %}
 
 {% block projects %}
-    <div class="columns">
-
-      {% for row in project_list %}
-      <div class="column is-10">
-        <div class="card">
-          <header class="card-header">
-            <p class="card-header-title">
-              {{ row.name }}
-            </p>
-            <span class="card-header-icon timestamp">
-              2m
-            </span>
-          </header>
-          <div class="card-content">
-            {% for build in row.builds[:5] %}
-            <h1>Build {{ build.id }}</h1>
-            <div class="panel-block-item">
-              <span class="likes">
-                <span class="icon">
-                  <i class="fa fa-{{ build.status_icon }}"></i>
-                </span>
-                <small><a href="">{{ build.slug[:8] }}</a></small>
-              </span>
-              <span class="comments">
-              <small><a href="{{ build.pipeline.repo.url }}" target="_NEW">visit repo</a></small>
-              <p><b>branch:</b> {{ build.pipeline.repo.branch }}</p>
-              <h3>Before steps</h3>
+<div class="column is-12">
+  {% for row in project_list %}
+  <div class="box">
+    {% for build in row.builds[:3] %}
+    <article class="media">
+      <div class="media-left">
+        <figure class="image is-64x64">
+          <span class="icon is-large"><i class="fa fa-{{ build.status_icon }} is-success"></i></span>
+        </figure>
+      </div>
+      <div class="media-content">
+        <div class="content">
+         <div class="notification is-success">
+            {{ row.name }}
+          </div>
+          <p>
+            <a href="{{ build.pipeline.repo.url }}" target="_NEW"><strong>{{ build.pipeline.repo.url }}@{{ build.pipeline.repo.branch }}</strong></a> <small style="float:right;">{{ build.dateof }}</small>
+            <p>
+              <em>Before steps</em>
               <ol>
               {% for s in build.step_logs.before_steps %}
-              <li><b>-</b><em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code> {{ s.took }}</li>
               {% endfor %}
               </ol>
-              <h3>Build steps</h3>
+              <em>Build steps</em>
               <ol>
               {% for s in build.step_logs.build_steps %}
-              <li><b>-</b><em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
               {% endfor %}
               </ol>
-              <h3>Publish steps</h3>
+              <em>Publish steps</em>
               <ol>
               {% for s in build.step_logs.publish_steps %}
-              <li><b>-</b><em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
               {% endfor %}
               </ol>
-              <h3>Deploy steps</h3>
+              <em>Deploy steps</em>
               <ol>
               {% for s in build.step_logs.deploy_steps %}
-              <li><b>-</b><em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
               {% endfor %}
               </ol>
-              <h3>Final steps</h3>
+              <em>Final steps</em>
               <ol>
               {% for s in build.step_logs.final_steps %}
-              <li><b>-</b><em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
+                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code></li>
               {% endfor %}
               </ol>
-
-                <small>{{ build.dateof }}</small>
-              </span>
-            </div>
-            {% endfor %}
-          </div>
+            </p>
+          </p>
         </div>
+        <nav class="level">
+          <div class="level-left">
+            <a class="level-item">
+              {{ build.slug[:8] }}
+            </a>
+          </div>
+        </nav>
       </div>
-      {% endfor %}
-    </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+
 
 </div>
 {% endblock %}
