@@ -1,3 +1,4 @@
+import re
 import os
 import git
 import yaml
@@ -39,6 +40,9 @@ def get_pipeline(pipeline_yaml_path):
 
 
 def compile_pipeline_to_send(pipeline, branch):
+    for key, matcher in pipeline.branch_group_matcher.iteritems():
+        m = re.search(matcher, branch)
+        import pdb;pdb.set_trace()
     build = pipeline.get(branch)
     assert build, 'No branch_group_matcher was found based on the current branch: {branch}'.format(branch=branch)
 
