@@ -15,6 +15,8 @@ Integrates with Salt so that deploy orchestration calls can be made
 3. `make bootstrap`
 4. `make models`
 
+`npm install -g grommet-cli`
+
 
 ### Using it
 
