@@ -21,7 +21,7 @@ Integrates with Salt so that deploy orchestration calls can be made
 
 1. `make run`  __starts the services__ - This starts the core services
 2. browse to `http://192.168.50.5:5000` - This is the public interface
-3. `make post path=/path/to/project/with/git/and/a/wobbuild.yml` __http posts a test yml file__ - This is the startings of the client that will be distributed
+3. `make wob path=/path/to/project/with/git/and/a/wobbuild.yml` __http posts a test yml file__ - This is the startings of the client that will be distributed
 
 
 ## Client
