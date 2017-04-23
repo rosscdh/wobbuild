@@ -1,0 +1,4 @@
+wobbuild:
+  receiver:
+    build: http://192.168.50.5:5000
+    deploy: http://192.168.50.5:5000/deploy

@@ -1,12 +1,11 @@
 import os
 import timy
+import yaml
 from timy.settings import (
     timy_config,
     TrackingMode
 )
 
-import yaml
-import uuid
 #import pprint
 
 from celery import Celery
@@ -21,7 +20,7 @@ from celery.signals import (before_task_publish,
                             task_unknown,
                             task_rejected,)
 
-from fabric.api import lcd, local
+from fabric.api import settings, lcd, local
 
 from wobbuild.settings import GLOBAL_VARS
 from wobbuild.app_logger import logger
@@ -37,7 +36,16 @@ celery_app = Celery('tasks',
 
 @celery_app.task(bind=True)
 def perform_pipeline(self, context, pipeline_template):
-    pipeline = yaml.load(pipeline_template)
+    pipeline = yaml.load(pipeline_template)  # used to be sent as yaml
+
+    BUILD_LOG = {
+        'system': [],
+        'before_steps': [],
+        'build_steps': [],
+        'publish_steps': [],
+        'deploy_steps': [],
+        'final_steps': [],
+    }
 
     logger.info('Celery Task: %s' % self.request.id)
     logger.debug('pipeline yaml', {'pipeline': pipeline})
@@ -54,8 +62,9 @@ def perform_pipeline(self, context, pipeline_template):
     builds_path = context.get('builds_path')
 
     logger.debug('create builds path: {builds_path}', {'builds_path': builds_path})
-    res = local('mkdir -p {builds_path}'.format(builds_path=builds_path), capture=True)
-    #log_step(build, res)
+    cmd = 'mkdir -p {builds_path}'.format(builds_path=builds_path)
+    res = local(cmd, capture=True)
+    log_step('create_build_path', BUILD_LOG, res, cmd)
 
     the_build_path = os.path.join(builds_path, pipeline.get('repo').get('name'), 'repo')
 
@@ -63,46 +72,54 @@ def perform_pipeline(self, context, pipeline_template):
 
     if pipeline.get('clean') is True:
         logger.info('clean build path', {'builds_path': builds_path})
-        res = local('rm -Rf {the_build_path}'.format(the_build_path=the_build_path), capture=True)
-        log_step(build, res)
+        cmd = 'rm -Rf {the_build_path}'.format(the_build_path=the_build_path)
+        res = local(cmd, capture=True)
+        log_step('clean_build_path', BUILD_LOG, res, cmd)
 
     if not os.path.exists(the_build_path):
         with lcd(builds_path):
             if not os.path.exists(the_build_path):
                 logger.info('clone repository', {'the_build_path': the_build_path, 'repo': repo})
-                res = local('git clone {url} {the_build_path}'.format(url=repo.get('url'), the_build_path=the_build_path), capture=True)
-                log_step(build, res)
+                cmd = 'git clone {url} {the_build_path}'.format(url=repo.get('url'), the_build_path=the_build_path)
+                res = local(cmd, capture=True)
+                log_step('clone_repo', BUILD_LOG, res, cmd)
 
     with lcd(the_build_path):
         logger.info('checkout branch', {'the_build_path': the_build_path})
-        res = local('git checkout {branch}'.format(branch=repo.get('branch')), capture=True)
-        log_step(build, res)
+        cmd = 'git checkout {branch}'.format(branch=repo.get('branch'))
+        res = local(cmd, capture=True)
+        log_step('git_checkout_branch', BUILD_LOG, res, cmd)
+
+    build_pipeline = pipeline.get('build')
 
     with timy.Timer() as timer:
-        for r in before_steps(pipeline, the_build_path):
-            log_step(build, r)
+        for r, step in before_steps(build_pipeline, the_build_path):
+            log_step('before_steps', BUILD_LOG, r, step)
 
     with timy.Timer() as timer:
-        for r in build_steps(pipeline, the_build_path):
-            log_step(build, r)
+        for r, step in build_steps(build_pipeline, the_build_path):
+            log_step('build_steps', BUILD_LOG, r, step)
 
     with timy.Timer() as timer:
-        for r in publish_steps(pipeline, the_build_path):
-            log_step(build, r)
+        for r, step in publish_steps(build_pipeline, the_build_path):
+            log_step('publish_steps', BUILD_LOG, r, step)
 
     with timy.Timer() as timer:
-        for r in deploy_steps(pipeline, the_build_path):
-            log_step(build, r)
+        for r, step in deploy_steps(build_pipeline, the_build_path):
+            log_step('deploy_steps', BUILD_LOG, r, step)
 
     with timy.Timer() as timer:
-        for r in final_steps(pipeline, the_build_path):
-            log_step(build, r)
+        for r, step in final_steps(build_pipeline, the_build_path):
+            log_step('final_steps', BUILD_LOG, r, step)
+
+    build.step_logs = BUILD_LOG
+    build.save()
 
 
 def before_steps(pipeline, the_build_path):
     for step in pipeline.get('before_steps', []):
         logger.info('perform before_step', {'step': step})
-        yield perform_step(path=the_build_path, step=step)
+        yield perform_step(path=the_build_path, step=step), step
 
 
 def build_steps(pipeline, the_build_path):
@@ -110,7 +127,7 @@ def build_steps(pipeline, the_build_path):
     if build.get('do') is True:
         for step in build.get('steps', []):
             logger.info('perform build.step', {'step': step})
-            yield perform_step(path=the_build_path, step=step)
+            yield perform_step(path=the_build_path, step=step), step
 
 
 def publish_steps(pipeline, the_build_path):
@@ -118,7 +135,7 @@ def publish_steps(pipeline, the_build_path):
     if publish.get('do') is True:
         for step in publish.get('steps', []):
             logger.info('perform publish.step', {'step': step})
-            yield perform_step(path=the_build_path, step=step)
+            yield perform_step(path=the_build_path, step=step), step
 
 
 def deploy_steps(pipeline, the_build_path):
@@ -126,31 +143,40 @@ def deploy_steps(pipeline, the_build_path):
     if deploy.get('do') is True:
         for step in deploy.get('steps', []):
             logger.info('perform deploy.step', {'step': step})
-            yield perform_step(path=the_build_path, step=step)
+            yield perform_step(path=the_build_path, step=step), step
 
 
 def final_steps(pipeline, the_build_path):
     for step in pipeline.get('final_steps', []):
         logger.info('perform final_steps', {'step': step})
-        yield perform_step(path=the_build_path, step=step)
+        yield perform_step(path=the_build_path, step=step), step
 
 
 def perform_step(path, step):
-    #print 'cd {the_build_path}'.format(the_build_path=the_build_path)
-    with lcd(path):
-        return local(step, capture=True)
+    with settings(warn_only=True):
+        with lcd(path):
+            res = local(step, capture=True)
+            return res
 
 
-def log_step(build, result):
-    logs = build.step_logs.get('logs', [])
-    logs.append(result.stdout or result.stderr)
-    build.step_logs['logs'] = logs
-    build.save()
-    return result
+def log_step(step_type, BUILD_LOG, result, step):
+    step_type = 'system' if step_type not in BUILD_LOG.keys() else step_type
+    event = {
+        'step_type': step_type,
+        'step': step,
+        'result': result.stdout or result.stderr,
+    }
+    BUILD_LOG[step_type].append(event)
 
 
 @task_failure.connect
 def task_failure_handler(sender=None, headers=None, body=None, **kwargs):
+    # information about task are located in headers for task messages
+    # using the task protocol version 2.
+    print kwargs
+
+@task_rejected.connect
+def task_rejected_handler(sender=None, headers=None, body=None, **kwargs):
     # information about task are located in headers for task messages
     # using the task protocol version 2.
     print kwargs

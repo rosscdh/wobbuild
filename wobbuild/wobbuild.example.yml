@@ -1,28 +1,108 @@
 language: java
+clean: false
 
 repo:
   name: rwd-douglas-pattern
   url: ssh://git@git.dglecom.net:7999/fron/rwd-douglas-pattern.git
   branch: doc/packaging-deploy
 
-clean: false
 
-before_steps:
-  - echo "Message to slack"
-  # - n v7.5.0
-  # - cd patternlab;npm install
+publishing:
+  name: Artifactory
+  repo_url: https://artifactory.somwhere.com/path/to/repo
 
-final_steps:
-  - echo "Message to slack"
 
-build:
-  do: true
-  steps:
-    - cd patternlab;npm test
-    - cd patternlab;npm publish
+branch_group_matcher:
+  master: master
+  feature: feature/ITDEV-(\d+)
+  release: release/(.+)
 
-deploy:
-  do: false
-  steps:
-    - echo "Upload to artifactory"
+#
+# Master Branch
+# Usually For deploy
+#
+master:
+  before_steps:
+    - echo "Message to slack"
+    # - n v7.5.0
+    # - cd patternlab;npm install
 
+  build:
+    do: true
+    steps:
+      - cd patternlab;npm test
+      - cd patternlab;npm publish
+
+  publish:
+    do: true
+    steps:
+      - echo "Upload to artifactory"
+
+  deploy:
+    do: true
+    steps:
+      - echo "Deploy using whatever"
+      - echo "Step required"
+
+  final_steps:
+    - echo "Message to slack"
+    - echo "send email"
+
+#
+# Feature branches
+# Usually just get tested built and packaged
+#
+feature:
+  before_steps:
+    - echo "Message to slack"
+    # - n v7.5.0
+    # - cd patternlab;npm install
+
+  build:
+    do: true
+    steps:
+      - cd patternlab;npm test
+      - cd patternlab;npm publish
+
+  publish:
+    do: true
+    steps:
+      - echo "Upload to artifactory"
+
+  deploy:
+    do: false
+    steps:
+      - echo "Upload to artifactory"
+
+  final_steps:
+    - echo "Message to slack"
+
+
+#
+# Release branch steps
+# Releases usually involve a publish step
+#
+release:
+  before_steps:
+    - echo "Message to slack"
+    # - n v7.5.0
+    # - cd patternlab;npm install
+
+  build:
+    do: true
+    steps:
+      - cd patternlab;npm test
+      - cd patternlab;npm publish
+
+  publish:
+    do: true
+    steps:
+      - echo "Upload to artifactory"
+
+  deploy:
+    do: false
+    steps:
+      - echo "Upload to artifactory"
+
+  final_steps:
+    - echo "Message to slack"
