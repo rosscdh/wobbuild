@@ -32,3 +32,23 @@ def read_pipeline(pipeline_yaml_path):
     if os.path.exists(pipeline_yaml_path):
         pipeline_yaml = open(pipeline_yaml_path, 'r').read()
         perform(pipeline_yaml=pipeline_yaml)
+
+
+@task
+def build(pipeline_yaml_path):
+    if os.path.exists(pipeline_yaml_path):
+        pipeline_yaml = open(pipeline_yaml_path, 'r').read()
+        perform(pipeline_yaml=pipeline_yaml)
+
+
+@task
+def publish(pipeline_yaml_path):
+    if os.path.exists(pipeline_yaml_path):
+        pipeline_yaml = open(pipeline_yaml_path, 'r').read()
+        perform(pipeline_yaml=pipeline_yaml)
+
+@task
+def deploy(pipeline_yaml_path):
+    if os.path.exists(pipeline_yaml_path):
+        pipeline_yaml = open(pipeline_yaml_path, 'r').read()
+        perform(pipeline_yaml=pipeline_yaml)

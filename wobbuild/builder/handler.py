@@ -1,5 +1,10 @@
 import os
 import timy
+from timy.settings import (
+    timy_config,
+    TrackingMode
+)
+
 import yaml
 import uuid
 #import pprint
@@ -23,6 +28,7 @@ from wobbuild.app_logger import logger
 
 from wobbuild.receiver.models import Project, Build
 
+timy_config.tracking_mode = TrackingMode.LOGGING
 
 celery_app = Celery('tasks',
                     backend=GLOBAL_VARS.get('redis').get('backend'),
@@ -75,27 +81,22 @@ def perform_pipeline(self, context, pipeline_template):
     with timy.Timer() as timer:
         for r in before_steps(pipeline, the_build_path):
             log_step(build, r)
-    logger.info(timer)
 
     with timy.Timer() as timer:
         for r in build_steps(pipeline, the_build_path):
             log_step(build, r)
-    logger.info(timer)
 
     with timy.Timer() as timer:
         for r in publish_steps(pipeline, the_build_path):
             log_step(build, r)
-    logger.info(timer)
 
     with timy.Timer() as timer:
         for r in deploy_steps(pipeline, the_build_path):
             log_step(build, r)
-    logger.info(timer)
 
     with timy.Timer() as timer:
         for r in final_steps(pipeline, the_build_path):
             log_step(build, r)
-    logger.info(timer)
 
 
 def before_steps(pipeline, the_build_path):
