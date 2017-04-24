@@ -15,6 +15,11 @@
     - python-pip
     - ruby
 
+- name: Install slanger for pusher like operations
+  gem:
+    name: slanger
+    state: present
+
 - name: Install the required base pip packages
   pip: name={{item}} state=present
   with_items:
