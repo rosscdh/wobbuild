@@ -25,6 +25,123 @@ Integrates with Salt so that deploy orchestration calls can be made
 3. `make wob path=/path/to/project/with/git/and/a/wobbuild.yml` __http posts a test yml file__ - This is the startings of the client that will be distributed
 
 
+### In Projects
+
+Copy this example into one of your projects
+
+```
+language: java
+clean: false
+
+repo:
+  name: rwd-douglas-pattern
+  url: ssh://git@git.dglecom.net:7999/path/to/some/repo.git
+  branch: doc/packaging-deploy
+
+
+publishing:
+  name: Artifactory
+  repo_url: https://artifactory.somwhere.com/path/to/repo
+
+
+branch_group_matcher:
+  master: master
+  feature: feature/ITDEV-(\d+)
+  release: release/(.+)
+
+
+#
+# Master Branch
+# Usually For deploy
+#
+master:
+  before_steps:
+    - echo "Message to slack"
+    # - n v7.5.0
+    # - cd patternlab;npm install
+
+  build:
+    do: true
+    steps:
+      - cd patternlab;npm test
+      - cd patternlab;npm publish
+
+  publish:
+    do: true
+    steps:
+      - echo "Upload to artifactory"
+
+  deploy:
+    do: true
+    steps:
+      - echo "Deploy using whatever"
+      - echo "Step required"
+
+  final_steps:
+    - echo "Message to slack"
+    - echo "send email"
+
+#
+# Feature branches
+# Usually just get tested built and packaged
+#
+feature:
+  before_steps:
+    - echo "Message to slack"
+    # - n v7.5.0
+    # - cd patternlab;npm install
+
+  build:
+    do: true
+    steps:
+      - cd patternlab;npm test
+      - cd patternlab;npm publish
+
+  publish:
+    do: true
+    steps:
+      - echo "Upload to artifactory"
+
+  deploy:
+    do: false
+    steps:
+      - echo "Upload to artifactory"
+
+  final_steps:
+    - echo "Message to slack"
+
+
+#
+# Release branch steps
+# Releases usually involve a publish step
+#
+release:
+  before_steps:
+    - echo "Message to slack"
+    # - n v7.5.0
+    # - cd patternlab;npm install
+
+  build:
+    do: true
+    steps:
+      - cd patternlab;npm test
+      - cd patternlab;npm publish
+
+  publish:
+    do: true
+    steps:
+      - echo "Upload to artifactory"
+
+  deploy:
+    do: false
+    steps:
+      - echo "Upload to artifactory"
+
+  final_steps:
+    - echo "Message to slack"
+
+```
+
 ## Client
 
 A pex file called `wob` that will allow developers to execute commands like
