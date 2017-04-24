@@ -2,6 +2,8 @@
 
 Yet another simple build and deploy system.
 
+A bit like travis, but simpler and Open Source.
+
 But this one, can be run by developers so that build time is not centralised.
 Publishes artifacts to an artifactory
 Integrates with Salt so that deploy orchestration calls can be made

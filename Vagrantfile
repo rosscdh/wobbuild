@@ -31,13 +31,13 @@ Vagrant.configure(2) do |config|
   # See https://github.com/mitchellh/vagrant/issues/5005
   config.ssh.insert_key = false
 
-  config.vm.provision :shell, :inline => "echo -e \"#{File.read("#{Dir.home}/.gitconfig")}\" > '/home/vagrant/.gitconfig'"
-  # config.vm.provision "ansible" do |ansible|
-  #   ansible.verbose = "vv"
-  #   ansible.playbook = "playbooks/vagrant.yml"
-  #   ansible.extra_vars = {
-  #   }
-  # end
+  #config.vm.provision :shell, :inline => "echo -e \"#{File.read("#{Dir.home}/.gitconfig")}\" > '/home/vagrant/.gitconfig'"
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "vv"
+    ansible.playbook = "playbooks/vagrant.yml"
+    ansible.extra_vars = {
+    }
+  end
   
 
   config.vm.network "forwarded_port", guest: 8280, host: 8280  
