@@ -1,4 +1,7 @@
 - ANXS.postgresql,v1.7.1
 - DavidWittman.redis
-- playlist.elasticsearch,master
+# - playlist.elasticsearch,master
 - kosssi.gitconfig
+- deiga.sbt
+- groover.maven
+- SimpliField.node

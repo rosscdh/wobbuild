@@ -14,13 +14,13 @@
       service: name=nginx state=restarted
     - name: restart {{ application_name }}
       service: name={{ application_name }} state=restarted
-  # pre_tasks:
-  #   - name: update apt cache
-  #     apt: update_cache=yes
   roles:
     - ANXS.postgresql
     - DavidWittman.redis
     - kosssi.gitconfig
+    - deiga.sbt
+    # - groover.maven
+    # - SimpliField.node
 
   tasks:
     - include: tasks/base.yml
