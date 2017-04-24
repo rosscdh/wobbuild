@@ -34,7 +34,7 @@ language: java
 clean: false
 
 repo:
-  name: rwd-douglas-pattern
+  name: my-patternlab-project
   url: ssh://git@git.dglecom.net:7999/path/to/some/repo.git
   branch: doc/packaging-deploy
 
