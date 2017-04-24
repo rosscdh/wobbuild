@@ -14,36 +14,36 @@
       <div class="media-content">
         <div class="content">
          <div class="notification is-success">
-            {{ row.name }}
+            {{ row.name }} <small style="float:right;">{{ build.dateof }}</small>
           </div>
           <p>
-            <a href="{{ build.pipeline.repo.url }}" target="_NEW"><strong>{{ build.pipeline.repo.url }}@{{ build.pipeline.repo.branch }}</strong></a> <small style="float:right;">{{ build.dateof }}</small>
+            <a href="{{ build.pipeline.repo.url }}" target="_NEW"><strong>{{ build.pipeline.repo.url }}@{{ build.pipeline.repo.branch }}</strong></a>
             <p>
-              <em>Before steps</em>
+              <b>Before steps</b>
               <ol>
               {% for s in build.step_logs.before_steps %}
                 <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
               {% endfor %}
               </ol>
-              <em>Build steps</em>
+              <b>Build steps</b>
               <ol>
               {% for s in build.step_logs.build_steps %}
                 <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
               {% endfor %}
               </ol>
-              <em>Publish steps</em>
+              <b>Publish steps</b>
               <ol>
               {% for s in build.step_logs.publish_steps %}
                 <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
               {% endfor %}
               </ol>
-              <em>Deploy steps</em>
+              <b>Deploy steps</b>
               <ol>
               {% for s in build.step_logs.deploy_steps %}
                 <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
               {% endfor %}
               </ol>
-              <em>Final steps</em>
+              <b>Final steps</b>
               <ol>
               {% for s in build.step_logs.final_steps %}
                 <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
@@ -55,7 +55,7 @@
         <nav class="level">
           <div class="level-left">
             <a class="level-item">
-              {{ build.slug[:8] }}
+              <!--{{ build.slug[:8] }}-->
             </a>
           </div>
         </nav>

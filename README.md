@@ -142,6 +142,13 @@ release:
 
 ```
 
+### How it currently looks
+
+yes yes.. im not a designer, actually no i kinda am.. but aint no body got time for dat.
+
+![uggers](preview.png "Ugly Preview")
+
+
 ## Client
 
 A pex file called `wob` that will allow developers to execute commands like
