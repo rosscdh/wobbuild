@@ -20,7 +20,10 @@ class ProjectsView(FlaskView):
     def post(self):
         app.logger.info('Got POST pipeline_receiver', {'host': request.host, 'url': request.url, 'remote_addr': request.remote_addr})
 
-        resp = perform(request.data)
+        is_async = request.args.get('is_async', 'yes') in ['1', 'true', 'yes', 'y']
+
+        resp = perform(pipeline_yaml=request.data,
+                       is_async=is_async)
 
         return jsonify({'message': 'Thanks', 'resp': resp})
 
