@@ -3,66 +3,69 @@
 {% block projects %}
 <div class="column is-12">
   {% for row in project_list %}
-  <div class="box">
-    {% for build in row.builds[:3] %}
-    <article class="media">
-      <div class="media-left">
-        <figure class="image is-64x64">
-          <span class="icon is-large"><i class="fa fa-{{ build.status_icon }} is-success"></i></span>
-        </figure>
-      </div>
-      <div class="media-content">
-        <div class="content">
-         <div class="notification is-success">
-            {{ row.name }} <small style="float:right;">{{ build.dateof }}</small>
-          </div>
-          <p>
-            <a href="{{ build.pipeline.repo.url }}" target="_NEW"><strong>{{ build.pipeline.repo.url }}@{{ build.pipeline.repo.branch }}</strong></a>
-            <p>
-              <b>Before steps</b>
-              <ol>
-              {% for s in build.step_logs.before_steps %}
-                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
-              {% endfor %}
-              </ol>
-              <b>Build steps</b>
-              <ol>
-              {% for s in build.step_logs.build_steps %}
-                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
-              {% endfor %}
-              </ol>
-              <b>Publish steps</b>
-              <ol>
-              {% for s in build.step_logs.publish_steps %}
-                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
-              {% endfor %}
-              </ol>
-              <b>Deploy steps</b>
-              <ol>
-              {% for s in build.step_logs.deploy_steps %}
-                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
-              {% endfor %}
-              </ol>
-              <b>Final steps</b>
-              <ol>
-              {% for s in build.step_logs.final_steps %}
-                <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small></li>
-              {% endfor %}
-              </ol>
-            </p>
-          </p>
+    <h1 class="title">{{ row.name }}</h1>
+    <div class="box">
+
+      {% for build in row.builds %}
+      <article class="media">
+        <div class="media-left">
+          <figure class="image is-64x64">
+            <span class="icon is-large"><i class="fa fa-{{ build.status_icon }}"></i></span>
+          </figure>
         </div>
-        <nav class="level">
-          <div class="level-left">
-            <a class="level-item">
-              <!--{{ build.slug[:8] }}-->
-            </a>
+        <div class="media-content">
+          <div class="content">
+           <div class="notification {% if build.status == 'success' %}is-success{% else %}is-danger{% endif %}">
+              {{ build.status }} <small style="float:right;">{{ build.dateof }}</small>
+            </div>
+            <progress class="progress is-success" value="60" max="100">60%</progress>
+            <p>
+              <a href="{{ build.pipeline.repo.url }}" target="_NEW"><strong>{{ build.pipeline.repo.url }}@{{ build.pipeline.repo.branch }}</strong></a>
+              <p>
+                <b>Before steps</b>
+                <ol>
+                {% for s in build.step_logs.before_steps %}
+                  <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
+                {% endfor %}
+                </ol>
+                <b>Build steps</b>
+                <ol>
+                {% for s in build.step_logs.build_steps %}
+                  <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
+                {% endfor %}
+                </ol>
+                <b>Publish steps</b>
+                <ol>
+                {% for s in build.step_logs.publish_steps %}
+                  <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
+                {% endfor %}
+                </ol>
+                <b>Deploy steps</b>
+                <ol>
+                {% for s in build.step_logs.deploy_steps %}
+                  <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
+                {% endfor %}
+                </ol>
+                <b>Final steps</b>
+                <ol>
+                {% for s in build.step_logs.final_steps %}
+                  <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
+                {% endfor %}
+                </ol>
+              </p>
+            </p>
           </div>
-        </nav>
-      </div>
-    </article>
-    {% endfor %}
-  </div>
+          <nav class="level">
+            <div class="level-left">
+              <a class="level-item">
+                <!--{{ build.slug[:8] }}-->
+              </a>
+            </div>
+          </nav>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
   {% endfor %}
 </div>
 

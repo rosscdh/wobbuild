@@ -1,5 +1,6 @@
 import os
 import yaml
+import uuid
 import pprint
 
 from app_logger import logger
@@ -19,14 +20,14 @@ def perform(pipeline_yaml, is_async=False):
 
     logger.debug('performing pipeline', {'pipeline_yaml': pipeline_yaml, 'GLOBAL_VARS': GLOBAL_VARS, 'is_async': is_async})
 
-    #is_async = False
+    is_async = False
     if is_async is True:
         # do it async
         perform_pipeline.delay(GLOBAL_VARS, pipeline_template)
     else:
         # do it sync for debugging
         pipeline = yaml.load(pipeline_template)  # used to be sent as yaml
-        service = BuilderService(build_id='123',
+        service = BuilderService(build_id=str(uuid.uuid1())[:8],
                                  context=GLOBAL_VARS,
                                  pipeline=pipeline)
         service.process()
