@@ -39,36 +39,39 @@ def perform_pipeline(self, context, pipeline_template):
 
 @task_success.connect
 def task_success_handler(sender=None, headers=None, body=None, **kwargs):
+    pass
     # information about task are located in headers for task messages
     # using the task protocol version 2.
-    print 'SUCCESS:'
-    print sender.request.id
-    build = Build.get(Build.slug == sender.request.id)
-    print build
-    build.status = 'success'
-    build.save()
-    print kwargs
+    # print 'SUCCESS:'
+    # print sender.request.id
+    # build = Build.get(Build.slug == sender.request.id)
+    # print build
+    # build.status = 'success'
+    # build.save()
+    # print kwargs
 
 
 @task_failure.connect
 def task_failure_handler(sender=None, headers=None, body=None, **kwargs):
+    pass
     # information about task are located in headers for task messages
     # using the task protocol version 2.
-    print sender
-    build = Build.get(Build.slug == sender.request.id)
-    print build
-    build.status = 'failure'
-    build.save()
-    print kwargs
+    # print sender
+    # build = Build.get(Build.slug == sender.request.id)
+    # print build
+    # build.status = 'failure'
+    # build.save()
+    # print kwargs
 
 
 @task_rejected.connect
 def task_rejected_handler(sender=None, headers=None, body=None, **kwargs):
+    pass
     # information about task are located in headers for task messages
     # using the task protocol version 2.
-    print sender
-    build = Build.get(Build.slug == sender.request.id)
-    print build
-    build.status = 'rejected'
-    build.save()
-    print kwargs
+    # print sender
+    # build = Build.get(Build.slug == sender.request.id)
+    # print build
+    # build.status = 'rejected'
+    # build.save()
+    # print kwargs
