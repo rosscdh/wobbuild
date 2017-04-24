@@ -26,18 +26,17 @@ class Failedresult(object):
 
 
 class BuilderService(object):
-    BUILD_LOG = {
-        'system': [],
-        'before_steps': [],
-        'build_steps': [],
-        'publish_steps': [],
-        'deploy_steps': [],
-        'final_steps': [],
-    }
-    has_failed = False
     logger = logger
 
     def __init__(self, build_id, context, pipeline, *args, **kwargs):
+        self.BUILD_LOG = {
+            'system': [],
+            'before_steps': [],
+            'build_steps': [],
+            'publish_steps': [],
+            'deploy_steps': [],
+            'final_steps': [],
+        }
         self.has_failed = None
 
         self.build_id = build_id
@@ -144,7 +143,6 @@ class BuilderService(object):
                                                                                                                   result=result,
                                                                                                                   return_code=result.return_code)
                         self.logger.error(msg)
-
                         raise BuildFailedException(msg)
 
     def before_steps(self, pipeline):
