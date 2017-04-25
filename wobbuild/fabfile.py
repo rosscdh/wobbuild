@@ -21,7 +21,7 @@ def perform(pipeline_yaml, is_async=False):
 
     logger.debug('performing pipeline', {'pipeline_yaml': pipeline_yaml, 'GLOBAL_VARS': GLOBAL_VARS, 'is_async': is_async})
 
-    #is_async = False
+    is_async = False
     if is_async is True:
         # do it async
         perform_pipeline.delay(GLOBAL_VARS, pipeline_template)

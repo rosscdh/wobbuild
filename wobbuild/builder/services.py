@@ -47,7 +47,11 @@ class BuilderService(object):
         self.pipeline = pipeline
 
         self.repo = self.pipeline.get('repo', {})
-        self.repo['dir_name'] =os.path.splitext(os.path.basename(os.path.normpath(urlparse(repo.get('url')).path)))
+
+        url = urlparse(self.repo.get('url'))
+
+        self.repo['dir_name'], ext = os.path.splitext(os.path.basename(os.path.normpath(url.path)))
+        self.logger.debug('Repo dir_name: %s extension: %s' % (self.repo['dir_name'], ext))
 
         self.project, is_new = Project.get_or_create(name=self.repo.get('name'))
         self.project.data = self.repo
