@@ -160,13 +160,7 @@ class BuilderService(object):
                                   took=timer.elapsed)
 
                     if is_successful is False:
-                        self.log_step(step_type=builder_step,
-                                      result=result.stderr,
-                                      return_code=result.return_code,
-                                      is_successful=is_successful,
-                                      step=step,
-                                      took=timer.elapsed)
-                        msg = 'Build {id} Failed: {step} with return_code: {return_code} result: {result}'.format(id=self.build_id,
+                        msg = 'Build {id} Failed: {step} with return_code: {return_code} result: {result.stderr}'.format(id=self.build_id,
                                                                                                                   step=step,
                                                                                                                   result=result,
                                                                                                                   return_code=result.return_code)
@@ -241,7 +235,8 @@ class BuilderService(object):
         event = {
             'step_type': step_type,
             'step': step,
-            'result': result.stdout or result.stderr,
+            'result': result.stdout,
+            'error': result.stderr,
             'is_successful': is_successful,
             'return_code': return_code,
             'took': took,
