@@ -149,33 +149,33 @@ class BuilderService(object):
 
     def before_steps(self, pipeline):
         for step in pipeline.get('before_steps', []):
-            logger.info('perform before_step', {'step': step})
+            self.logger.info('perform before_step', {'step': step})
             yield self.perform_step(path=self.the_build_path, step=step), step
 
     def build_steps(self, pipeline):
         build = pipeline.get('build', {})
         if build.get('do') is True:
             for step in build.get('steps', []):
-                logger.info('perform build.step', {'step': step})
+                self.logger.info('perform build.step', {'step': step})
                 yield self.perform_step(path=self.the_build_path, step=step), step
 
     def publish_steps(self, pipeline):
         publish = pipeline.get('publish', {})
         if publish.get('do') is True:
             for step in publish.get('steps', []):
-                logger.info('perform publish.step', {'step': step})
+                self.logger.info('perform publish.step', {'step': step})
                 yield self.perform_step(path=self.the_build_path, step=step), step
 
     def deploy_steps(self, pipeline):
         deploy = pipeline.get('deploy', {})
         if deploy.get('do') is True:
             for step in deploy.get('steps', []):
-                logger.info('perform deploy.step', {'step': step})
+                self.logger.info('perform deploy.step', {'step': step})
                 yield self.perform_step(path=self.the_build_path, step=step), step
 
     def final_steps(self, pipeline):
         for step in pipeline.get('final_steps', []):
-            logger.info('perform final_steps', {'step': step})
+            self.logger.info('perform final_steps', {'step': step})
             yield self.perform_step(path=self.the_build_path, step=step), step
 
     def perform_step(self, path, step):
@@ -190,6 +190,7 @@ class BuilderService(object):
             env_variables.update({
                 'has_failed': self.has_failed,
             })
+            self.logger.debug('set env_variables {env_variables}'.format(env_variables=env_variables), env_variables)
 
             # Turn the step into a jinja template
             step = Template(step)
