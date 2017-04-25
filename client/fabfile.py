@@ -1,13 +1,14 @@
 import re
 import os
 import git
-import yaml
+import ruamel.yaml as yaml
+
 import requests
 
 from fabric.api import task
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_VARS = yaml.load(open(os.path.join(BASE_PATH, 'vars/default.yml'), 'r').read())
+DEFAULT_VARS = yaml.load(open(os.path.join(BASE_PATH, 'vars/default.yml'), 'r').read(), Loader=yaml.RoundTripLoader)
 DEFAULT_VARS.update({
     'BASE_PATH': BASE_PATH,
 })
@@ -17,7 +18,8 @@ def perform(pipeline):
     # send to web-reciever
     url = DEFAULT_VARS.get('wobbuild').get('receiver').get('build')
 
-    pipeline_yaml = yaml.dump(pipeline)
+    pipeline_yaml = yaml.dump(pipeline, Dumper=yaml.RoundTripDumper)
+
     headers = {
         'Content-Type': 'application/x-yaml'
     }
@@ -36,7 +38,7 @@ def git_brach(repo_dir):
 
 
 def get_pipeline(pipeline_yaml_path):
-    return yaml.load(open(pipeline_yaml_path, 'r').read())
+    return yaml.load(open(pipeline_yaml_path, 'r').read(), Loader=yaml.RoundTripLoader)
 
 
 def compile_pipeline_to_send(pipeline, branch):
@@ -44,9 +46,11 @@ def compile_pipeline_to_send(pipeline, branch):
     Extract a matching build_group from the current branch name of the git repo
     then return compile the new branch matcher
     """
+    matched_build_group = 'master'
+    #print pipeline.get('build_group_matcher'), branch
     for key, matcher in pipeline.get('build_group_matcher').iteritems():
         m = re.search(matcher, branch)
-        if m and len(m.groups()) >= 1:
+        if m:
             matched_build_group = key
             break
 

@@ -1,4 +1,5 @@
-import yaml
+import ruamel.yaml as yaml
+
 from timy.settings import (
     timy_config,
     TrackingMode
@@ -30,7 +31,7 @@ celery_app = Celery('tasks',
 
 @celery_app.task(bind=True)
 def perform_pipeline(self, context, pipeline_template):
-    pipeline = yaml.load(pipeline_template)  # used to be sent as yaml
+    pipeline = yaml.load(pipeline_template, Loader=yaml.RoundTripLoader)  # used to be sent as yaml
     service = BuilderService(build_id=self.request.id,
                              context=context,
                              pipeline=pipeline)

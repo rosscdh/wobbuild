@@ -31,25 +31,23 @@ Vagrant.configure(2) do |config|
   # See https://github.com/mitchellh/vagrant/issues/5005
   config.ssh.insert_key = false
 
-  #config.vm.provision :shell, :inline => "echo -e \"#{File.read("#{Dir.home}/.gitconfig")}\" > '/home/vagrant/.gitconfig'"
+  config.vm.provision :shell, privileged: false , :inline => "echo -e \"#{File.read("#{Dir.home}/.gitconfig")}\" > '/home/vagrant/.gitconfig'"
   config.vm.provision "ansible" do |ansible|
     ansible.verbose = "vv"
     ansible.playbook = "playbooks/vagrant.yml"
     ansible.extra_vars = {
     }
   end
-  
-
-  config.vm.network "forwarded_port", guest: 8280, host: 8280  
-  config.vm.network "private_network", ip: "192.168.50.5"
-  config.ssh.forward_agent    = true
-
   config.vm.provision :shell, privileged: false do |s|
     ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
     s.inline = <<-SHELL
        echo #{ssh_pub_key} >> /home/vagrant/.ssh/authorized_keys
     SHELL
-  end
+  end  
+
+  config.vm.network "forwarded_port", guest: 8280, host: 8280  
+  config.vm.network "private_network", ip: "192.168.50.5"
+  config.ssh.forward_agent    = true
 
   config.vm.synced_folder '.', '/vagrant', nfs: true
 

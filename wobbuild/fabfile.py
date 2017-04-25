@@ -1,5 +1,6 @@
 import os
-import yaml
+import ruamel.yaml as yaml
+
 import uuid
 import pprint
 
@@ -26,7 +27,7 @@ def perform(pipeline_yaml, is_async=False):
         perform_pipeline.delay(GLOBAL_VARS, pipeline_template)
     else:
         # do it sync for debugging
-        pipeline = yaml.load(pipeline_template)  # used to be sent as yaml
+        pipeline = yaml.load(pipeline_template, Loader=yaml.RoundTripLoader)  # used to be sent as yaml
         service = BuilderService(build_id=str(uuid.uuid1())[:8],
                                  context=GLOBAL_VARS,
                                  pipeline=pipeline)

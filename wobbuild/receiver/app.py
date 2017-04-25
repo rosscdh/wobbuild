@@ -21,7 +21,7 @@ class ProjectsView(FlaskView):
         app.logger.info('Got POST pipeline_receiver', {'host': request.host, 'url': request.url, 'remote_addr': request.remote_addr})
 
         is_async = request.args.get('is_async', 'yes') in ['1', 'true', 'yes', 'y']
-
+        is_async = True
         resp = perform(pipeline_yaml=request.data,
                        is_async=is_async)
 

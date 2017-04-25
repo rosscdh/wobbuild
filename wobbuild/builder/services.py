@@ -199,10 +199,12 @@ class BuilderService(object):
         with settings(warn_only=True):
 
             # Set the environment Variables
-            env_variables = self.pipeline.get('vars', {})
-            env_variables.update(self.context)
+            env_variables = self.pipeline.get('vars')
+            if not env_variables:
+                env_variables = {}
+            #env_variables.update(self.context)
             env_variables.update({
-                'has_failed': self.has_failed,
+                'has_failed': str(self.has_failed) if self.has_failed else '0',
             })
             self.logger.debug('set env_variables {env_variables}'.format(env_variables=env_variables), env_variables)
 
@@ -211,7 +213,7 @@ class BuilderService(object):
             step = step.render(**env_variables)
 
             # set the env vars in the shell
-            with shell_env(*env_variables):
+            with shell_env(**env_variables):
                 # cd into the build path
                 with lcd(self.the_build_path):
                     # execute the now templaterized step
