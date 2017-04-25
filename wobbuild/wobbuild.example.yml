@@ -6,6 +6,12 @@ repo:
   url: ssh://git@git.dglecom.net:7999/fron/rwd-douglas-pattern.git
   branch: doc/packaging-deploy
 
+#
+# Vars gets merged with the GLOBAL_VARS params
+#
+vars:
+  A_VARIABLE: 'foo'
+  A_VARIABLE_AGAIN: 'bar'
 
 publishing:
   name: Artifactory
