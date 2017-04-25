@@ -1,6 +1,8 @@
 import os
 import timy
 
+from jinja2 import Template
+
 from collections import OrderedDict
 
 from timy.settings import (
@@ -185,6 +187,13 @@ class BuilderService(object):
             # Set the environment Variables
             env_variables = self.pipeline.get('vars', {})
             env_variables.update(self.context)
+            env_variables.update({
+                'has_failed': self.has_failed,
+            })
+
+            # Turn the step into a jinja template
+            step = Template(step)
+            step = step.render(**env_variables)
 
             with shell_env(*env_variables):
                 with lcd(path):
