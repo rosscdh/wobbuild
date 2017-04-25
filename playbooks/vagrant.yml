@@ -15,7 +15,7 @@
     - name: restart {{ application_name }}
       service: name={{ application_name }} state=restarted
   roles:
-    - ANXS.postgresql
+    # - ANXS.postgresql
     - DavidWittman.redis
     - kosssi.gitconfig
     # - deiga.sbt

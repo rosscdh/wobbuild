@@ -7,6 +7,7 @@
     - libffi-devel
     - python-devel
     - openssl-devel
+    - postgresql-devel
   
 - name: Install Node and pip epel-release
   yum: name={{ item }} state=present
