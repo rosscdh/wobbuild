@@ -8,6 +8,18 @@
     - python-devel
     - openssl-devel
     - postgresql-devel
+    - zlib-devel
+    - python-imaging
+    - libtiff-devel
+    - libjpeg-devel
+    - libzip-devel
+    - freetype-devel
+    - lcms2-devel
+    - libwebp-devel
+    - tcl-devel
+    - tk-devel
+    - libxslt-devel
+    - libxml2-devel
   
 - name: Install Node and pip epel-release
   yum: name={{ item }} state=present

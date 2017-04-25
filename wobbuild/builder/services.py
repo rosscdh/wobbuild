@@ -243,4 +243,6 @@ class BuilderService(object):
         if is_successful is False:
             self.build.status = 'failure' 
 
-        self.build.save()
+        #self.build.save()
+        query = Build.update(step_logs=self.BUILD_LOG, status=self.build.status).where(id == self.build.id)
+        query.execute()
