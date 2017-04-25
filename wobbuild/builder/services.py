@@ -160,6 +160,12 @@ class BuilderService(object):
                                   took=timer.elapsed)
 
                     if is_successful is False:
+                        self.log_step(step_type=builder_step,
+                                      result=result.stderr,
+                                      return_code=result.return_code,
+                                      is_successful=is_successful,
+                                      step=step,
+                                      took=timer.elapsed)
                         msg = 'Build {id} Failed: {step} with return_code: {return_code} result: {result}'.format(id=self.build_id,
                                                                                                                   step=step,
                                                                                                                   result=result,
