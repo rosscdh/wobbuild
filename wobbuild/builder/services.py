@@ -1,5 +1,6 @@
 import os
 import timy
+from urlparse import urlparse
 
 from jinja2 import Template
 
@@ -46,6 +47,7 @@ class BuilderService(object):
         self.pipeline = pipeline
 
         self.repo = self.pipeline.get('repo', {})
+        self.repo['dir_name'] =os.path.splitext(os.path.basename(os.path.normpath(urlparse(repo.get('url')).path)))
 
         self.project, is_new = Project.get_or_create(name=self.repo.get('name'))
         self.project.data = self.repo
@@ -56,7 +58,7 @@ class BuilderService(object):
         self.build.save()
 
         self.builds_path = context.get('builds_path')
-        self.the_build_path = os.path.join(self.builds_path, self.pipeline.get('repo').get('name'), 'repo')
+        self.the_build_path = os.path.join(self.builds_path, self.repo.get('dir_name'), 'repo')
 
     def process(self):
         self.init_project()

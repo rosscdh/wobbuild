@@ -25,31 +25,31 @@
                 <b>Before steps</b>
                 <ol>
                 {% for s in build.step_logs.before_steps %}
-                  <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
+                  <li><b>-</b> <em>{{ s.step }}</em>:<br/>{# {# <code>{{ s.result }}</code><br/>#}#}<small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
                 {% endfor %}
                 </ol>
                 <b>Build steps</b>
                 <ol>
                 {% for s in build.step_logs.build_steps %}
-                  <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
+                  <li><b>-</b> <em>{{ s.step }}</em>:<br/>{# <code>{{ s.result }}</code><br/>#}<small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
                 {% endfor %}
                 </ol>
                 <b>Publish steps</b>
                 <ol>
                 {% for s in build.step_logs.publish_steps %}
-                  <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
+                  <li><b>-</b> <em>{{ s.step }}</em>:<br/>{# <code>{{ s.result }}</code><br/>#}<small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
                 {% endfor %}
                 </ol>
                 <b>Deploy steps</b>
                 <ol>
                 {% for s in build.step_logs.deploy_steps %}
-                  <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
+                  <li><b>-</b> <em>{{ s.step }}</em>:<br/>{# <code>{{ s.result }}</code><br/>#}<small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
                 {% endfor %}
                 </ol>
                 <b>Final steps</b>
                 <ol>
                 {% for s in build.step_logs.final_steps %}
-                  <li><b>-</b> <em>{{ s.step }}</em>:<br/><code>{{ s.result }}</code><br/><small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
+                  <li><b>-</b> <em>{{ s.step }}</em>:<br/>{# <code>{{ s.result }}</code><br/>#}<small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}</li>
                 {% endfor %}
                 </ol>
               </p>
