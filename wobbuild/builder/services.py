@@ -8,7 +8,7 @@ from timy.settings import (
     TrackingMode
 )
 
-from fabric.api import settings, lcd, local
+from fabric.api import settings, lcd, local, shell_env
 
 from wobbuild.app_logger import logger
 
@@ -181,9 +181,14 @@ class BuilderService(object):
             return Failedresult()
 
         with settings(warn_only=True):
-            with lcd(path):
-                res = local(step, capture=True)
-                return res
+
+            # Set the environment Variables
+            env_variables = self.pipeline.get('vars', {})
+            env_variables.update(self.context)
+
+            with shell_env(*env_variables):
+                with lcd(path):
+                    return local(step, capture=True)
 
     def log_step(self, step_type, result, return_code, is_successful, step, took):
         if self.has_failed is None:
