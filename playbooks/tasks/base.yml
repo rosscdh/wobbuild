@@ -13,12 +13,14 @@
   with_items:
     - nodejs
     - python-pip
-    - ruby
+    - ruby-devel
 
 - name: Install slanger for pusher like operations
-  gem:
-    name: slanger
-    state: present
+  gem: name={{ item }} state=present
+  with_items:
+    - bundler
+    - rack
+    - slanger
 
 - name: Install the required base pip packages
   pip: name={{item}} state=present
