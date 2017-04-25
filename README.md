@@ -49,6 +49,9 @@ vars:
   A_VARIABLE_AGAIN: 'bar'
 
 
+#
+# Match up the build_groups with the appropriate git branches
+#
 build_group_matcher:
   master: master
   feature: feature/ITDEV-(\d+)

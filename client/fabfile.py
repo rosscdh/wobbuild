@@ -57,6 +57,7 @@ def compile_pipeline_to_send(pipeline, branch):
         'language': pipeline.get('language'),
         'clean': pipeline.get('clean'),
         'repo': pipeline.get('repo'),
+        'vars': pipeline.get('vars'),
         'build_group_matcher': pipeline.get('build_group_matcher'),
         'build': build
     }
