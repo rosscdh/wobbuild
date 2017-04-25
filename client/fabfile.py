@@ -44,20 +44,20 @@ def compile_pipeline_to_send(pipeline, branch):
     Extract a matching build_group from the current branch name of the git repo
     then return compile the new branch matcher
     """
-    for key, matcher in pipeline.get('branch_group_matcher').iteritems():
+    for key, matcher in pipeline.get('build_group_matcher').iteritems():
         m = re.search(matcher, branch)
         if m and len(m.groups()) >= 1:
             matched_build_group = key
             break
 
     build = pipeline.get(matched_build_group)
-    assert build, 'No branch_group_matcher was found based on the current branch: {branch}'.format(branch=branch)
+    assert build, 'No build_group_matcher was found based on the current branch: {branch}'.format(branch=branch)
 
     send_pipeline = {
         'language': pipeline.get('language'),
         'clean': pipeline.get('clean'),
         'repo': pipeline.get('repo'),
-        'branch_group_matcher': pipeline.get('branch_group_matcher'),
+        'build_group_matcher': pipeline.get('build_group_matcher'),
         'build': build
     }
     return send_pipeline

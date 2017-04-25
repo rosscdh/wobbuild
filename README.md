@@ -41,12 +41,15 @@ repo:
   branch: doc/packaging-deploy
 
 
-publishing:
-  name: Artifactory
-  repo_url: https://artifactory.somwhere.com/path/to/repo
+#
+# Vars gets merged with the GLOBAL_VARS params
+#
+vars:
+  A_VARIABLE: 'foo'
+  A_VARIABLE_AGAIN: 'bar'
 
 
-branch_group_matcher:
+build_group_matcher:
   master: master
   feature: feature/ITDEV-(\d+)
   release: release/(.+)

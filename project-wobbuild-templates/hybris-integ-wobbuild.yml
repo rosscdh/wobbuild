@@ -6,12 +6,7 @@ repo:
   url: ssh://git@git.dglecom.net:7999/hybris/hybris.git
 
 
-publishing:
-  name: Artifactory
-    repo_url: https://artifactory.dglecom.net/dgl_hybris_integ
-
-
-branch_group_matcher:
+build_group_matcher:
   release: release/(.+)
 
 #

@@ -13,12 +13,10 @@ vars:
   A_VARIABLE: 'foo'
   A_VARIABLE_AGAIN: 'bar'
 
-publishing:
-  name: Artifactory
-  repo_url: https://artifactory.somwhere.com/path/to/repo
-
-
-branch_group_matcher:
+#
+# Match up the build_groups with the appropriate git branches
+#
+build_group_matcher:
   master: master
   feature: feature/ITDEV-(\d+)
   release: release/(.+)
