@@ -63,8 +63,12 @@ class BuilderService(object):
         self.build_the_pipeline()
 
     def init_project(self):
+        """
+        @TODO turn these steps into a seperate service
+        """
         self.logger.debug('create builds path: {builds_path}', {'builds_path': self.builds_path})
 
+        # Create the builds path
         cmd = 'mkdir -p {builds_path}'.format(builds_path=self.builds_path)
         with timy.Timer() as timer:
             res = local(cmd, capture=True)
@@ -75,6 +79,9 @@ class BuilderService(object):
                           step=cmd,
                           took=timer.elapsed)
 
+        #
+        # Perform a clean if specified
+        #
         if self.pipeline.get('clean') is True:
             with timy.Timer() as timer:
                 self.logger.info('clean build path', {'builds_path': self.builds_path})
@@ -87,20 +94,27 @@ class BuilderService(object):
                               step=cmd,
                               took=timer.elapsed)
 
+        #
+        # if the build_path doesnt exist then create
+        #
         if not os.path.exists(self.the_build_path):
+            # step into the place we store our builds
             with lcd(self.builds_path):
-                if not os.path.exists(self.the_build_path):
-                    with timy.Timer() as timer:
-                        self.logger.info('clone repository', {'the_build_path': self.the_build_path, 'repo': self.repo})
-                        cmd = 'git clone {url} {the_build_path}'.format(url=self.repo.get('url'), the_build_path=self.the_build_path)
-                        res = local(cmd, capture=True)
-                        self.log_step(step_type='clone_repo',
-                                      result=res,
-                                      return_code=res.return_code,
-                                      is_successful=res.return_code == 0,
-                                      step=cmd,
-                                      took=timer.elapsed)
+                # clone the repo
+                with timy.Timer() as timer:
+                    self.logger.info('clone repository', {'the_build_path': self.the_build_path, 'repo': self.repo})
+                    cmd = 'git clone {url} {the_build_path}'.format(url=self.repo.get('url'), the_build_path=self.the_build_path)
+                    res = local(cmd, capture=True)
+                    self.log_step(step_type='clone_repo',
+                                  result=res,
+                                  return_code=res.return_code,
+                                  is_successful=res.return_code == 0,
+                                  step=cmd,
+                                  took=timer.elapsed)
 
+        #
+        # Checkout the requested branch
+        #
         with lcd(self.the_build_path):
             with timy.Timer() as timer:
                 self.logger.info('checkout branch', {'the_build_path': self.the_build_path})
