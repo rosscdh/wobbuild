@@ -10,8 +10,8 @@ class BuildList(Resource):
         return Build.select()
 
     def get(self):
-        build = self.get_queryset()
-        res = builds_schema.dump(build)
+        builds = self.get_queryset()
+        res = builds_schema.dump(builds)
         return jsonify(res.data)
 
 

@@ -2,6 +2,9 @@ bootstrap:
 	ansible-galaxy install -r requirements.yml
 	vagrant up
 
+requirements:
+	vagrant ssh -c 'cd /vagrant/;source /vagrant/virtualenv/bin/activate;./virtualenv/bin/pip install -r requirements.txt'
+
 start:
 	vagrant ssh -c 'cd /vagrant/;source /vagrant/virtualenv/bin/activate;./virtualenv/bin/honcho start'
 

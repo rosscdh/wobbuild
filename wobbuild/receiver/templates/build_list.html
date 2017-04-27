@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<script type="text/javascript">
-var stdout_logs = {};
-var stderr_logs = {};
-</script>
+{% raw %}
+
+<div id="container">
+
+</div>
+
+
 <div class="row">
     <div class="col-md-12">
       <h2>Latest Builds</h2>
@@ -12,34 +15,7 @@ var stderr_logs = {};
 
     <div class="row">
 
-          {% for build in object_list %}
-          <div class="col-md-4">
-            <div class="panel panel-{% if build.status == 'success' %}success{% elif build.status == 'created' %}info{% elif build.status == 'failure' %}danger{% else %}warning{% endif %}">
-              <div class="panel-heading">
-                <h3 class="panel-title">
-                  <a href="{{ build.pipeline.repo.url }}">{{ build.project.name }}@{{ build.pipeline.repo.branch }}</a>
-                  <span class="pull-right text-right"><i class="material-icons">{% if build.status == 'success' %}thumb up{% elif build.status == 'created' %}flight takeoff{% elif build.status == 'failure' %}thumb down{% else %}fingerprint{% endif %}</i></span>
-                </h3>
-              </div>
-              <div class="panel-body">
-                <div class="bs-component">
-                  <div class="progress">
-                    <div class="progress-bar" style="width: 60%;"></div>
-                  </div>
-                </div>
-                <p>
-                Build time: {{ build.dateof }}
-                </p>
-                <button type="button" class="btn btn-block btn-danger" data-build_slug="{{ build.slug }}" data-toggle="modal" data-target="#modal-logs">View Failed<div class="ripple-container"></div></button>
-                <button type="button" class="btn btn-block btn-xs btn-info">Re-Run Build</a></button>
-              </div>
-            </div>
-          </div>
-          <script type="text/javascript">
-            stderr_logs['{{ build.slug }}'] = {{ build.step_logs|tojson|safe }};
-          </script>
-          {% endfor %}
-  </div>
+    </div>
 </div>
 
 <div id="modal-logs" class="modal">
@@ -57,117 +33,58 @@ var stderr_logs = {};
     </div>
   </div>
 </div>
-
+{% endraw %}
 {% endblock %}
 
 {% block js %}
 {% raw %}
-<script id="list-build-step-logs" type="text/x-handlebars-template">
-<div class="bs-component">
-  <div class="list-group">
-    {{#eachProperty steps}}
-    <div class="list-group-item">
-      <div class="row-content">
-        <!-- <div class="least-content">15m</div> -->
-        <h4 class="list-group-item-heading">{{property}}</h4>
-        <!-- <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p> -->
-        <ol>
-          {{#each value}}
-          <li>
-            <div class="alert {{#if this.is_successful }}alert-muted{{ else }}alert-danger{{/if}}">
-            <i class="material-icons">{{#if this.is_successful }}check{{ else }}error{{/if}}</i> {{ step }}
-            </div>
-            <div class="well well-sm {{#if this.is_successful }}hide{{/if}}">
-            {{#if this.is_successful }}
-              {{ result }}
-            {{ else }}
-              {{ error }}
-            {{/if}}
-            </div>
-          </li>
-          {{/each}}
-        </ol>
-      </div>
-    </div>
-    <div class="list-group-separator"></div>
-    {{~/eachProperty}}
-  </div>
-</script>
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pusher/4.1.0/pusher.worker.min.js"></script>
+<script type="text/babel">
+  var destination = document.querySelector("#container");
 
-<script type="text/javascript">
-var source   = $("#list-build-step-logs").html();
-var list_build_step_logs_template = Handlebars.compile(source);
+  var Build = React.createClass({
+  render: function() {
+    return (
+      <div>{this.props.obj.slug}</div>
+    );
+  }
+  });
 
-Handlebars.registerHelper('eachProperty', function(context, options) {
-    var ret = "";
-    for(var prop in context)
-    {
-        ret = ret + options.fn({property:prop,value:context[prop]});
+  var Builds = React.createClass({
+    getInitialState: function() {
+        return { 'builds': [] };
+    },
+    componentDidMount: function() {
+      axios.get( '/api/builds' )
+        .then(res => {
+
+          var builds = res.data.map(obj => <Build key={obj.slug} obj={obj}/>);
+
+          this.setState({ 'builds': builds });
+        });
+    },
+    render: function() {
+      return (<div>{this.state.builds}</div>)
     }
-    return ret;
-});
+  });
 
-$('#modal-logs').on('show.bs.modal', function (event) {
-  var button = $(event.relatedTarget) // Button that triggered the modal
-  var build_slug = button.data('build_slug') // Extract info from data-* attributes
-  var data = stderr_logs[build_slug];
-  console.log(data)
-  var modal = $(this)
-  modal.find('.modal-title').text('Build Logs for: ' + build_slug)
-  modal.find('.modal-body').html(list_build_step_logs_template({'steps': data}))
-})
+  function App() {
+    return (
+      <div>
+        <Builds />
+      </div>
+    );
+  }
 
-var APP_KEY = '1234567890';
-var protocol = location.protocol;
-var slashes = protocol.concat("//");
-var host = slashes.concat(window.location.hostname);
+  ReactDOM.render(
+    <ReactRouter.Router history={ReactRouter.hashHistory}>
+    <ReactRouter.Route path="/" component={App}>
 
-const socket = new Pusher(APP_KEY, {
-  wsHost: "192.168.50.5",
-  wsPort: "8080",
-  // wssPort: "8080",
-  enabledTransports: ['ws'],
-  //httpPort: 8080,
-  encrypted: false,
-
-});
-
-var getBuild = function (build_id){
-  return $.ajax( '/api/builds/' + build_id );
-};
-
-var channel = socket.subscribe('builds');
-channel.bind('new-build', function(data) {
-  console.log('GOT a whole new-build');
-  var promise = getBuild(data.data.build_id)
-
-  promise.done(function() {
-           console.log( "success" );
-         })
-         .fail(function() {
-           console.log( "error" );
-         })
-         .always(function() {
-           console.log( "done" );
-         })
-  // inject new build data
-});
-channel.bind('new-build-log', function(data) {
-  console.log('GOT new-build-log DATA');
-  var promise = getBuild(data.data.build_id)
-
-  promise.done(function() {
-           console.log( "success" );
-         })
-         .fail(function() {
-           console.log( "error" );
-         })
-         .always(function() {
-           console.log( "done" );
-         })
-});
+    </ReactRouter.Route>
+    </ReactRouter.Router>,
+    destination
+  );
 </script>
+
 {% endraw %}
 {% endblock %}
