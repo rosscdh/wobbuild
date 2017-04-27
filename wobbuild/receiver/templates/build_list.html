@@ -28,7 +28,7 @@ var stderr_logs = {};
                   </div>
                 </div>
                 <p>
-                Build time:
+                Build time: {{ build.dateof }}
                 </p>
                 <button type="button" class="btn btn-block btn-danger" data-build_slug="{{ build.slug }}" data-toggle="modal" data-target="#modal-logs">View Failed<div class="ripple-container"></div></button>
                 <button type="button" class="btn btn-block btn-xs btn-info">Re-Run Build</a></button>
@@ -94,6 +94,8 @@ var stderr_logs = {};
   </div>
 </script>
 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pusher/4.1.0/pusher.worker.min.js"></script>
+
 <script type="text/javascript">
 var source   = $("#list-build-step-logs").html();
 var list_build_step_logs_template = Handlebars.compile(source);
@@ -117,6 +119,31 @@ $('#modal-logs').on('show.bs.modal', function (event) {
   modal.find('.modal-body').html(list_build_step_logs_template({'steps': data}))
 })
 
+var APP_KEY = '1234567890';
+var protocol = location.protocol;
+var slashes = protocol.concat("//");
+var host = slashes.concat(window.location.hostname);
+
+const socket = new Pusher(APP_KEY, {
+  wsHost: "192.168.50.5",
+  wsPort: "8080",
+  // wssPort: "8080",
+  enabledTransports: ['ws'],
+  //httpPort: 8080,
+  encrypted: false,
+
+});
+
+var channel = socket.subscribe('builds');
+channel.bind('new-build', function(data) {
+  console.log('GOT a whole new-build');
+  console.log(data);
+  // inject new build data
+});
+channel.bind('new-build-log', function(data) {
+  console.log('GOT new-build-log DATA');
+  console.log(data);
+});
 </script>
 {% endraw %}
 {% endblock %}

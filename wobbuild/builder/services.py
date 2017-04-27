@@ -11,6 +11,8 @@ from timy.settings import (
     TrackingMode
 )
 
+from pusher import Pusher
+
 from fabric.api import settings, lcd, local, shell_env
 
 from wobbuild.app_logger import logger
@@ -19,6 +21,21 @@ from wobbuild.receiver.models import Project, Build
 from wobbuild.builder.exceptions import BuildFailedException
 
 timy_config.tracking_mode = TrackingMode.LOGGING
+
+PUSHER = Pusher(app_id=u'1',
+                key=u'1234567890',
+                secret=u'wobbuild-secret',
+                host=u'192.168.50.5',
+                port=4567,
+                ssl=False)
+
+
+class PusherEvent(object):
+    def __init__(self, *args, **kwargs):
+        self.client = PUSHER
+
+    def send(self, channel, event, *args, **kwargs):
+        self.client.trigger(channel, event, kwargs)
 
 
 class Failedresult(object):
@@ -30,6 +47,7 @@ class Failedresult(object):
 
 class BuilderService(object):
     logger = logger
+    pusher = PusherEvent()
 
     def __init__(self, build_id, context, pipeline, *args, **kwargs):
         self.BUILD_LOG = {
@@ -60,6 +78,8 @@ class BuilderService(object):
         self.build, is_new = Build.get_or_create(project=self.project, slug=str(self.build_id), status='created')
         self.build.pipeline = self.pipeline
         self.build.save()
+
+        self.pusher.send(channel=u'builds', event=u'new-build', data={'build_id': self.build.slug})
 
         self.builds_path = context.get('builds_path')
         self.the_build_path = os.path.join(self.builds_path, self.repo.get('dir_name'), 'repo')
@@ -253,3 +273,5 @@ class BuilderService(object):
         #self.build.save()
         query = Build.update(step_logs=self.BUILD_LOG, status=self.build.status).where(id == self.build.id)
         query.execute()
+        self.pusher.send(channel=u'builds', event=u'new-build-log', data={'build_id': self.build.slug, 'event': event})
+
