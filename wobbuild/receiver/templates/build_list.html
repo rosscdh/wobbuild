@@ -1,177 +1,122 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div class="row">
-      <div class="col-md-12">
-        <h2>Panels</h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        
-        <div class="bs-component">
-          {% for build in object_list %}
-            <div class="panel panel-{% if build.status == 'success' %}success{% elif build.status == 'created' %}info{% elif build.status == 'failure' %}danger{% else %}warning{% endif %}">
-              <div class="panel-heading">
-                <h3 class="panel-title">{{ build.status }} <small>{{ build.dateof }}</small></h3>
-              </div>
-              <div class="panel-body">
-              {{build.slug}}
-                <p><small>{{ build.pipeline.repo.url }}@{{ build.pipeline.repo.branch }}</small></p>
-                <a href="javascript:void(0)" class="btn btn-raised btn-info">View Log<div class="ripple-container"></div></a>
-                <a href="javascript:void(0)" class="btn btn-raised btn-danger">View Failed Log<div class="ripple-container"></div></a>
-              </div>
-            </div>
-          {% endfor %}
-
-          <div class="panel panel-success">
-            <div class="panel-heading">
-              <h3 class="panel-title">Panel success</h3>
-            </div>
-            <div class="panel-body">
-              Panel content
-            </div>
-          </div>
-
-          <div class="panel panel-warning">
-            <div class="panel-heading">
-              <h3 class="panel-title">Panel warning</h3>
-            </div>
-            <div class="panel-body">
-              Panel content
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="bs-component">
-          <div class="panel panel-danger">
-            <div class="panel-heading">
-              <h3 class="panel-title">Panel danger</h3>
-            </div>
-            <div class="panel-body">
-              Panel content
-            </div>
-          </div>
-
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title">Panel info</h3>
-            </div>
-            <div class="panel-body">
-              Panel content
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-{% endblock %}
-
-{% block js %}
 <script type="text/javascript">
 var stdout_logs = {};
 var stderr_logs = {};
 </script>
-{% endblock %}
-
-{% block projects %}
-<div class="column is-12">
-  {% for row in project_list %}
-    <h1 class="title">{{ row.name }}</h1>
-    <div class="box">
-
-      {% for build in row.builds %}
-      <article class="media">
-        <div class="media-left">
-          <figure class="image is-64x64">
-            <span class="icon is-large"><i class="fa fa-{{ build.status_icon }}"></i></span>
-          </figure>
-        </div>
-        <div class="media-content">
-          <div class="content">
-           <div class="notification {% if build.status == 'success' %}is-success{% else %}is-danger{% endif %}">
-              {{ build.status }} <small style="float:right;">{{ build.dateof }}</small>
-            </div>
-            <progress class="progress is-success" value="60" max="100">60%</progress>
-            <p>
-              <a href="{{ build.pipeline.repo.url }}" target="_NEW"><strong>{{ build.pipeline.repo.url }}@{{ build.pipeline.repo.branch }}</strong></a>
-              <p>
-                <b>Before steps</b>
-                <ol>
-                {% for s in build.step_logs.before_steps %}
-                  <li>
-                    <b>-</b> <em>{{ s.step }}</em>:<br/>{# <code>{{ s.result }}</code><br/>#}<small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}
-                    {% if not s.is_successful %}
-                      <textarea class="is-24 textarea">{{ s.error|safe }}</textarea>
-                    {% endif %}
-                  </li>
-                {% endfor %}
-                </ol>
-                <b>Build steps</b>
-                <ol>
-                {% for s in build.step_logs.build_steps %}
-                  <li>
-                    <b>-</b> <em>{{ s.step }}</em>:<br/>{# <code>{{ s.result }}</code><br/>#}<small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}
-                    {% if not s.is_successful %}
-                      <textarea class="is-24 textarea">{{ s.error|safe }}</textarea>
-                    {% endif %}
-                  </li>
-                {% endfor %}
-                </ol>
-                <b>Publish steps</b>
-                <ol>
-                {% for s in build.step_logs.publish_steps %}
-                  <li>
-                    <b>-</b> <em>{{ s.step }}</em>:<br/>{# <code>{{ s.result }}</code><br/>#}<small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}
-                    {% if not s.is_successful %}
-                      <textarea class="is-24 textarea">{{ s.error|safe }}</textarea>
-                    {% endif %}
-                  </li>
-                {% endfor %}
-                </ol>
-                <b>Deploy steps</b>
-                <ol>
-                {% for s in build.step_logs.deploy_steps %}
-                  <li>
-                    <b>-</b> <em>{{ s.step }}</em>:<br/>{# <code>{{ s.result }}</code><br/>#}<small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}
-                    {% if not s.is_successful %}
-                      <textarea class="is-24 textarea">{{ s.error|safe }}</textarea>
-                    {% endif %}
-                  </li>
-                {% endfor %}
-                </ol>
-                <b>Final steps</b>
-                <ol>
-                {% for s in build.step_logs.final_steps %}
-                  <li>
-                    <b>-</b> <em>{{ s.step }}</em>:<br/>{# <code>{{ s.result }}</code><br/>#}<small><em>took:</em> {{ s.took }}</small> success: {{ s.is_successful }} return_code: {{ s.return_code }}
-                    {% if not s.is_successful %}
-                      <textarea class="is-24 textarea">{{ s.error|safe }}</textarea>
-                    {% endif %}
-                  </li>
-                {% endfor %}
-                </ol>
-              </p>
-            </p>
-          </div>
-          <nav class="level">
-            <div class="level-left">
-              <a class="level-item">
-                {{ build.slug[:8] }}
-              </a>
-            </div>
-          </nav>
-        </div>
-      </article>
-      {% endfor %}
+<div class="row">
+    <div class="col-md-12">
+      <h2>Panels</h2>
     </div>
-  {% endfor %}
+
+    <div class="row">
+
+          {% for build in object_list %}
+          <div class="col-md-4">
+            <div class="panel panel-{% if build.status == 'success' %}success{% elif build.status == 'created' %}info{% elif build.status == 'failure' %}danger{% else %}warning{% endif %}">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  <a href="{{ build.pipeline.repo.url }}">{{ build.project.name }}@{{ build.pipeline.repo.branch }}</a>
+                  <span class="pull-right text-right"><i class="material-icons">{% if build.status == 'success' %}thumb up{% elif build.status == 'created' %}flight takeoff{% elif build.status == 'failure' %}thumb down{% else %}fingerprint{% endif %}</i></span>
+                </h3>
+              </div>
+              <div class="panel-body">
+                <div class="bs-component">
+                  <div class="progress">
+                    <div class="progress-bar" style="width: 60%;"></div>
+                  </div>
+                </div>
+                <p>
+                Build time:
+                </p>
+                <button type="button" class="btn btn-block btn-danger" data-build_slug="{{ build.slug }}" data-toggle="modal" data-target="#modal-logs">View Failed<div class="ripple-container"></div></button>
+                <button type="button" class="btn btn-block btn-xs btn-info">Re-Run Build</a></button>
+              </div>
+            </div>
+          </div>
+          <script type="text/javascript">
+            stderr_logs['{{ build.slug }}'] = {{ build.step_logs|tojson|safe }};
+          </script>
+          {% endfor %}
+  </div>
 </div>
 
-
+<div id="modal-logs" class="modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
+
 {% endblock %}
 
- 2f6b61b0 visit repo
-branch: master
-[u'publish_steps', u'system', u'build_steps', u'before_steps', u'final_steps', u'deploy_steps'] 
+{% block js %}
+{% raw %}
+<script id="list-build-step-logs" type="text/x-handlebars-template">
+<div class="bs-component">
+  <div class="list-group">
+    {{#eachProperty steps}}
+    <div class="list-group-item">
+      <div class="row-content">
+        <!-- <div class="least-content">15m</div> -->
+        <h4 class="list-group-item-heading">{{property}}</h4>
+        <!-- <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus.</p> -->
+        <ol>
+          {{#each value}}
+          <li>
+            <div class="alert {{#if this.is_successful }}alert-muted{{ else }}alert-danger{{/if}}">
+            <i class="material-icons">{{#if this.is_successful }}check{{ else }}error{{/if}}</i> {{ step }}
+            </div>
+            <div class="well well-sm {{#if this.is_successful }}hide{{/if}}">
+            {{#if this.is_successful }}
+              {{ result }}
+            {{ else }}
+              {{ error }}
+            {{/if}}
+            </div>
+          </li>
+          {{/each}}
+        </ol>
+      </div>
+    </div>
+    <div class="list-group-separator"></div>
+    {{~/eachProperty}}
+  </div>
+</script>
+
+<script type="text/javascript">
+var source   = $("#list-build-step-logs").html();
+var list_build_step_logs_template = Handlebars.compile(source);
+
+Handlebars.registerHelper('eachProperty', function(context, options) {
+    var ret = "";
+    for(var prop in context)
+    {
+        ret = ret + options.fn({property:prop,value:context[prop]});
+    }
+    return ret;
+});
+
+$('#modal-logs').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var build_slug = button.data('build_slug') // Extract info from data-* attributes
+  var data = stderr_logs[build_slug];
+  console.log(data)
+  var modal = $(this)
+  modal.find('.modal-title').text('Build Logs for: ' + build_slug)
+  modal.find('.modal-body').html(list_build_step_logs_template({'steps': data}))
+})
+
+</script>
+{% endraw %}
+{% endblock %}

@@ -16,11 +16,19 @@
       service: name={{ application_name }} state=restarted
   roles:
     # - ANXS.postgresql
+    - { role: rvm_io.ruby,
+        tags: ruby,
+        rvm1_rubies: ['ruby-2.3.1', 'ruby-1.9.3'],
+        rvm1_install_flags: '--auto-dotfiles',
+        rvm1_install_path: /usr/local/rvm,
+        rvm1_user: root 
+      }
     - DavidWittman.redis
     - kosssi.gitconfig
-    # - deiga.sbt
-    # - groover.maven
-    # - SimpliField.node
+    - williamyeh.oracle-java
+    - gantsign.maven
+    - andrewrothstein.scala
+    # - { role: robdyke.ant, become: yes }
 
   tasks:
     - include: tasks/base.yml

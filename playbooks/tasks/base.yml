@@ -28,12 +28,17 @@
     - python-pip
     - ruby-devel
 
-# - name: Install slanger for pusher like operations
-#   gem: name={{ item }} state=present
-#   with_items:
-#     - bundler
-#     - rack
-#     - slanger
+# ruby
+- name: use Ruby 1.9.3 (required by slanger)
+  shell: /home/vagrant/.rvm/bin/rvm use 1.9.3
+  args:
+    executable: /bin/bash
+
+- name: Install slanger for pusher like operations
+  gem: name={{ item }} state=latest include_doc=no user_install=yes
+  with_items:
+    - slanger
+# end slanger
 
 - name: Install the required base pip packages
   pip: name={{item}} state=present
