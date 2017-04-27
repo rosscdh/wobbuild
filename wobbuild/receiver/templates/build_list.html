@@ -28,6 +28,7 @@ var stderr_logs = {};
                   </div>
                 </div>
                 <p>
+                {{ build.slug }}
                 Build time: {{ build.dateof }}
                 </p>
                 <button type="button" class="btn btn-block btn-danger" data-build_slug="{{ build.slug }}" data-toggle="modal" data-target="#modal-logs">View Failed<div class="ripple-container"></div></button>

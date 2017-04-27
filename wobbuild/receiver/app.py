@@ -1,13 +1,22 @@
-from flask import Flask, request, jsonify, render_template
 from flask_classy import FlaskView
+from flask import Flask, request, jsonify, render_template
+
+from flask_restful import Api
 
 from wobbuild.app_logger import gelf_handler
-from wobbuild.receiver.models import Project, Build
+
+from wobbuild.receiver.models import Build
+from wobbuild.receiver.api import BuildList, BuildDetail
+
 from wobbuild.fabfile import perform
 
 app = Flask(__name__)
 app.logger.addHandler(gelf_handler)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+api = Api(app)
+api.add_resource(BuildList, '/api/builds')
+api.add_resource(BuildDetail, '/api/builds/<string:slug>')
 
 
 class ProjectsView(FlaskView):
@@ -26,5 +35,6 @@ class ProjectsView(FlaskView):
                        is_async=is_async)
 
         return jsonify({'message': 'Thanks', 'resp': resp})
+
 
 ProjectsView.register(app)
