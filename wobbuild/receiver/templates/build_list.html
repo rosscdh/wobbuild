@@ -58,6 +58,9 @@
   var BuildsService = {
     uri: '/api/builds',
 
+    initial: function () {
+      return initialBuilds;
+    },
     builds: function () {
       return axios.get( this.uri )
     },
@@ -65,6 +68,7 @@
       return axios.get( this.uri + '/' + slug )
     }
   }
+  console.log(BuildsService.initial())
 {% raw %}
   var Build = React.createClass({
   render: function() {
@@ -74,7 +78,7 @@
         <div className="panel">
           <div className="panel-heading">
             <h3 className="panel-title">
-              <a href="{ build.pipeline.repo.url }">{ build.project.name }@{ build.pipeline.repo.branch }</a>
+              <a href="{ build.repo.url }">{ build.project.name }@{ build.repo.branch }</a>
               <span className="pull-right text-right"><i className="material-icons">flight takeoff</i></span>
             </h3>
           </div>
@@ -98,19 +102,19 @@
 
   var Builds = React.createClass({
     getInitialState: function() {
-        return { 'builds': [] };
+        return { 'builds': BuildsService.initial().map(obj => <Build key={obj.slug} build={obj}/>) };
     },
     componentDidMount: function() {
       /**
       * Collect Builds
       */
-      var buildsProvider = BuildsService.builds();
-      buildsProvider.then(res => {
-        var builds = res.data.map(obj => <Build key={obj.slug} build={obj}/>);
-        this.setState({
-          'builds': builds
-        });
-      });
+      // var buildsProvider = BuildsService.builds();
+      // buildsProvider.then(res => {
+      //   var builds = res.data.map(obj => <Build key={obj.slug} build={obj}/>);
+      //   this.setState({
+      //     'builds': builds
+      //   });
+      // });
       /**
       * Handle sockets here
       */

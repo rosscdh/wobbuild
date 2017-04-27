@@ -53,4 +53,5 @@ class Build(pw.Model):
             return 'eject'
         return 'question'
 
+
 db.create_tables([Project, Build], safe=True)

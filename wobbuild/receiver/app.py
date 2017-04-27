@@ -24,10 +24,9 @@ class ProjectsView(FlaskView):
     route_base = '/'
 
     def get(self):
-        #res = builds_schema.dump(Build.select().limit(25))
+        res = builds_schema.dump(Build.select().limit(25))
         return render_template('build_list.html',
-                               #object_list=res.data)
-                               object_list=[])
+                               object_list=res.data)
 
     def post(self):
         app.logger.info('Got POST pipeline_receiver', {'host': request.host, 'url': request.url, 'remote_addr': request.remote_addr})

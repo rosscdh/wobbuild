@@ -15,6 +15,7 @@ class ProjectSchema(ma.Schema):
 
 class BuildSchema(ma.Schema):
     project = ma.Nested(ProjectSchema)
+    repo = ma.Field(attribute='pipeline.repo')
 
     class Meta:
         # Fields to expose
@@ -22,10 +23,12 @@ class BuildSchema(ma.Schema):
             'slug',
             'project',
             'dateof',
-            'pipeline',
-            'step_logs',
+            # 'pipeline',
+            # 'step_logs',
+            'repo',
             'status',
         )
+
     # Smart hyperlinking
     # _links = ma.Hyperlinks({
     #     'self': ma.URLFor('author_detail', id='<id>'),
