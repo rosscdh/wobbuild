@@ -6,14 +6,23 @@ app = Flask(__name__)
 ma = Marshmallow(app)
 
 
+class ProjectSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'name',
+        )
+
+
 class BuildSchema(ma.Schema):
+    project = ma.Nested(ProjectSchema)
+
     class Meta:
         # Fields to expose
         fields = (
             'slug',
-            #'project',
+            'project',
             'dateof',
-            #'pipeline',
+            'pipeline',
             'step_logs',
             'status',
         )

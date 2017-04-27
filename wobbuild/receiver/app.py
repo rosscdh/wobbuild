@@ -7,6 +7,7 @@ from wobbuild.app_logger import gelf_handler
 
 from wobbuild.receiver.models import Build
 from wobbuild.receiver.api import BuildList, BuildDetail
+from wobbuild.receiver.serializers import builds_schema
 
 from wobbuild.fabfile import perform
 
@@ -23,8 +24,10 @@ class ProjectsView(FlaskView):
     route_base = '/'
 
     def get(self):
+        #res = builds_schema.dump(Build.select().limit(25))
         return render_template('build_list.html',
-                               object_list=Build.select().limit(25))
+                               #object_list=res.data)
+                               object_list=[])
 
     def post(self):
         app.logger.info('Got POST pipeline_receiver', {'host': request.host, 'url': request.url, 'remote_addr': request.remote_addr})

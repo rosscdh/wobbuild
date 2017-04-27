@@ -3,9 +3,6 @@
 {% block body %}
 {% raw %}
 
-<div id="container">
-
-</div>
 
 
 <div class="row">
@@ -13,9 +10,8 @@
       <h2>Latest Builds</h2>
     </div>
 
-    <div class="row">
+      <div id="container"></div>
 
-    </div>
 </div>
 
 <div id="modal-logs" class="modal">
@@ -37,15 +33,65 @@
 {% endblock %}
 
 {% block js %}
-{% raw %}
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pusher/4.1.0/pusher.worker.min.js"></script>
 <script type="text/babel">
   var destination = document.querySelector("#container");
 
+  var initialBuilds = {{ object_list|tojson|safe }};
+
+  var PusherService = {
+    APP_KEY: '1234567890',
+    wsHost: '192.168.50.5',
+    wsPort: '8080',
+    socket: function () {
+      return new Pusher(this.APP_KEY, {
+                wsHost: this.wsHost,
+                wsPort: this.wsPort,
+                // wssPort: "8080",
+                enabledTransports: ['ws'],
+                //httpPort: 8080,
+                encrypted: false,
+              });
+    }
+  }
+
+  var BuildsService = {
+    uri: '/api/builds',
+
+    builds: function () {
+      return axios.get( this.uri )
+    },
+    build: function (slug) {
+      return axios.get( this.uri + '/' + slug )
+    }
+  }
+{% raw %}
   var Build = React.createClass({
   render: function() {
+    var build = this.props.build;
     return (
-      <div>{this.props.obj.slug}</div>
+      <div className="col-md-4">
+        <div className="panel">
+          <div className="panel-heading">
+            <h3 className="panel-title">
+              <a href="{ build.pipeline.repo.url }">{ build.project.name }@{ build.pipeline.repo.branch }</a>
+              <span className="pull-right text-right"><i className="material-icons">flight takeoff</i></span>
+            </h3>
+          </div>
+          <div className="panel-body">
+            <div className="bs-component">
+              <div className="progress">
+                <div className="progress-bar" style={{'width' : '30%'}}></div>
+              </div>
+            </div>
+            <p>
+            Build time: { build.dateof }
+            </p>
+            <button type="button" className="btn btn-block btn-danger" data-build_slug="{ build.slug }" data-toggle="modal" data-target="#modal-logs">View Failed<div className="ripple-container"></div></button>
+            <button type="button" className="btn btn-block btn-xs btn-info">Re-Run Build</button>
+          </div>
+        </div>
+      </div>
     );
   }
   });
@@ -55,16 +101,26 @@
         return { 'builds': [] };
     },
     componentDidMount: function() {
-      axios.get( '/api/builds' )
-        .then(res => {
-
-          var builds = res.data.map(obj => <Build key={obj.slug} obj={obj}/>);
-
-          this.setState({ 'builds': builds });
+      /**
+      * Collect Builds
+      */
+      var buildsProvider = BuildsService.builds();
+      buildsProvider.then(res => {
+        var builds = res.data.map(obj => <Build key={obj.slug} build={obj}/>);
+        this.setState({
+          'builds': builds
         });
+      });
+      /**
+      * Handle sockets here
+      */
+      var socket = PusherService.socket();
+      var channel = socket.subscribe('builds');
+      channel.bind('new-build', function(data) { console.log(data) });
+      channel.bind('new-build-log', function(data) { console.log(data) });
     },
     render: function() {
-      return (<div>{this.state.builds}</div>)
+      return (<div className="row">{this.state.builds}</div>)
     }
   });
 
@@ -84,7 +140,6 @@
     </ReactRouter.Router>,
     destination
   );
-</script>
-
 {% endraw %}
+</script>
 {% endblock %}
