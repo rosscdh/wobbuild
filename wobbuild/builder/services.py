@@ -271,7 +271,8 @@ class BuilderService(object):
             self.build.status = 'failure' 
 
         #self.build.save()
-        query = Build.update(step_logs=self.BUILD_LOG, status=self.build.status).where(id=self.build.id)
+        query = Build.update(step_logs=self.BUILD_LOG, status=self.build.status).where(id==self.build.id)
         query.execute()
-        self.pusher.send(channel=u'builds', event=u'new-build-log', data={'build_id': self.build.slug, 'event': event})
+        # cant send whole event "too much data" L()
+        self.pusher.send(channel=u'builds', event=u'new-build-log', data={'build_id': self.build.slug})
 
