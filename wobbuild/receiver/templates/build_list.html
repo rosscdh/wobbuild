@@ -1,5 +1,79 @@
 {% extends 'base.html' %}
 
+{% block body %}
+<div class="row">
+      <div class="col-md-12">
+        <h2>Panels</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        
+        <div class="bs-component">
+          {% for build in object_list %}
+            <div class="panel panel-{% if build.status == 'success' %}success{% elif build.status == 'created' %}info{% elif build.status == 'failure' %}danger{% else %}warning{% endif %}">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{ build.status }} <small>{{ build.dateof }}</small></h3>
+              </div>
+              <div class="panel-body">
+              {{build.slug}}
+                <p><small>{{ build.pipeline.repo.url }}@{{ build.pipeline.repo.branch }}</small></p>
+                <a href="javascript:void(0)" class="btn btn-raised btn-info">View Log<div class="ripple-container"></div></a>
+                <a href="javascript:void(0)" class="btn btn-raised btn-danger">View Failed Log<div class="ripple-container"></div></a>
+              </div>
+            </div>
+          {% endfor %}
+
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <h3 class="panel-title">Panel success</h3>
+            </div>
+            <div class="panel-body">
+              Panel content
+            </div>
+          </div>
+
+          <div class="panel panel-warning">
+            <div class="panel-heading">
+              <h3 class="panel-title">Panel warning</h3>
+            </div>
+            <div class="panel-body">
+              Panel content
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="bs-component">
+          <div class="panel panel-danger">
+            <div class="panel-heading">
+              <h3 class="panel-title">Panel danger</h3>
+            </div>
+            <div class="panel-body">
+              Panel content
+            </div>
+          </div>
+
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <h3 class="panel-title">Panel info</h3>
+            </div>
+            <div class="panel-body">
+              Panel content
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+var stdout_logs = {};
+var stderr_logs = {};
+</script>
+{% endblock %}
+
 {% block projects %}
 <div class="column is-12">
   {% for row in project_list %}
