@@ -28,7 +28,6 @@ var stderr_logs = {};
                   </div>
                 </div>
                 <p>
-                {{ build.slug }}
                 Build time: {{ build.dateof }}
                 </p>
                 <button type="button" class="btn btn-block btn-danger" data-build_slug="{{ build.slug }}" data-toggle="modal" data-target="#modal-logs">View Failed<div class="ripple-container"></div></button>
@@ -135,15 +134,39 @@ const socket = new Pusher(APP_KEY, {
 
 });
 
+var getBuild = function (build_id){
+  return $.ajax( '/api/builds/' + build_id );
+};
+
 var channel = socket.subscribe('builds');
 channel.bind('new-build', function(data) {
   console.log('GOT a whole new-build');
-  console.log(data);
+  var promise = getBuild(data.data.build_id)
+
+  promise.done(function() {
+           console.log( "success" );
+         })
+         .fail(function() {
+           console.log( "error" );
+         })
+         .always(function() {
+           console.log( "done" );
+         })
   // inject new build data
 });
 channel.bind('new-build-log', function(data) {
   console.log('GOT new-build-log DATA');
-  console.log(data);
+  var promise = getBuild(data.data.build_id)
+
+  promise.done(function() {
+           console.log( "success" );
+         })
+         .fail(function() {
+           console.log( "error" );
+         })
+         .always(function() {
+           console.log( "done" );
+         })
 });
 </script>
 {% endraw %}
