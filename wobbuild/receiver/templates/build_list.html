@@ -71,38 +71,43 @@
   console.log(BuildsService.initial())
 {% raw %}
   var Build = React.createClass({
-  render: function() {
-    var build = this.props.build;
-    return (
-      <div className="col-md-4">
-        <div className="panel">
-          <div className="panel-heading">
-            <h3 className="panel-title">
-              <a href="{ build.repo.url }">{ build.project.name }@{ build.repo.branch }</a>
-              <span className="pull-right text-right"><i className="material-icons">flight takeoff</i></span>
-            </h3>
-          </div>
-          <div className="panel-body">
-            <div className="bs-component">
-              <div className="progress">
-                <div className="progress-bar" style={{'width' : '30%'}}></div>
-              </div>
+    componentDidMount: function() {
+      this.props.listen_channel.bind('new-build-log-' + this.props.build.slug, function(data) { console.log(data) });
+    },
+    render: function() {
+      var build = this.props.build;
+      return (
+        <div className="col-md-4">
+          <div className="panel">
+            <div className="panel-heading">
+              <h3 className="panel-title">
+                <a href={ build.repo.url }>{ build.project.name }@{ build.repo.branch }</a>
+                <span className="pull-right text-right"><i className="material-icons">flight takeoff</i></span>
+              </h3>
             </div>
-            <p>
-            Build time: { build.dateof }
-            </p>
-            <button type="button" className="btn btn-block btn-danger" data-build_slug="{ build.slug }" data-toggle="modal" data-target="#modal-logs">View Failed<div className="ripple-container"></div></button>
-            <button type="button" className="btn btn-block btn-xs btn-info">Re-Run Build</button>
+            <div className="panel-body">
+              <div className="bs-component">
+                <div className="progress">
+                  <div className="progress-bar" style={{'width' : '30%'}}></div>
+                </div>
+              </div>
+              <p>
+              Build time: { build.dateof }
+              </p>
+              <button type="button" className="btn btn-block btn-danger" data-build_slug="{ build.slug }" data-toggle="modal" data-target="#modal-logs">View Failed<div className="ripple-container"></div></button>
+              <button type="button" className="btn btn-block btn-xs btn-info">Re-Run Build</button>
+            </div>
           </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
   });
 
   var Builds = React.createClass({
     getInitialState: function() {
-        return { 'builds': BuildsService.initial().map(obj => <Build key={obj.slug} build={obj}/>) };
+        this.socket = PusherService.socket();
+        this.listen_channel = this.socket.subscribe('builds');
+        return { 'builds': BuildsService.initial().map(obj => <Build key={obj.slug} listen_channel={this.listen_channel} build={obj}/>) };
     },
     componentDidMount: function() {
       /**
@@ -118,10 +123,7 @@
       /**
       * Handle sockets here
       */
-      var socket = PusherService.socket();
-      var channel = socket.subscribe('builds');
-      channel.bind('new-build', function(data) { console.log(data) });
-      channel.bind('new-build-log', function(data) { console.log(data) });
+      this.listen_channel.bind('new-build', function(data) { console.log(data) });
     },
     render: function() {
       return (<div className="row">{this.state.builds}</div>)
