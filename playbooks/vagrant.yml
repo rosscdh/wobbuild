@@ -25,10 +25,10 @@
       }
     - DavidWittman.redis
     - kosssi.gitconfig
-    # - williamyeh.oracle-java
-    # - gantsign.maven
-    # - andrewrothstein.scala
-    # - { role: robdyke.ant, become: yes }
+    - williamyeh.oracle-java
+    - gantsign.maven
+    - andrewrothstein.scala
+    - { role: robdyke.ant, become: yes }
 
   tasks:
     - include: tasks/base.yml

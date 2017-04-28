@@ -29,6 +29,8 @@
     - ruby-devel
 
 # ruby
+- name: update rvm
+  command: /bin/bash -lc "rvm get stable --auto-dotfiles"
 
 - name: use Ruby 1.9.3 (required by slanger)
   command: /bin/bash -lc "rvm use 1.9.3"
