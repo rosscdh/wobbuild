@@ -152,7 +152,7 @@ release:
 
 ### How it currently looks
 
-yes yes.. im not a designer, actually no i kinda am.. but aint no body got time for dat.
+yes yes.. im not a designer. aint no body got time for dat.
 
 ![uggers](preview.png "Ugly Preview")
 
