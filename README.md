@@ -12,18 +12,14 @@ Integrates with Salt so that deploy orchestration calls can be made
 
 ### Install
 
-1. pip install ansible
-2. install vagrant
-3. `make bootstrap`
-
-`npm install -g grommet-cli`
+1. `docker-compose up`
 
 
 ### Using it
 
 
-1. `make run`  __starts the services__ - This starts the core services
-2. browse to `http://192.168.50.5:5000` - This is the public interface
+1. `docker-compose up`
+2. browse to `http://localhost:5000` - This is the public interface
 3. `make wob path=/path/to/project/with/git/and/a/wobbuild.yml` __http posts a test yml file__ - This is the startings of the client that will be distributed
 
 
@@ -159,7 +155,7 @@ yes yes.. im not a designer. aint no body got time for dat.
 
 ## Client
 
-A pex file called `wob` that will allow developers to execute commands like
+A docker image can be run to work like this
 
 `wob build:/Users/rosscdh/p/my-project/wobbuild.yml`
 
