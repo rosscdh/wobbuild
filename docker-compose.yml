@@ -1,0 +1,13 @@
+version: '3.2'
+
+services:
+  web:
+    build:
+      context: ./wobbuild
+    ports:
+      - 5000:5000
+
+  redis:
+    image: redis:4-alpine
+    ports:
+      - 6379:6379
