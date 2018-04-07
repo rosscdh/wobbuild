@@ -9,7 +9,7 @@ from wobbuild.receiver.models import Build
 from wobbuild.receiver.api import BuildList, BuildDetail
 from wobbuild.receiver.serializers import builds_schema
 
-from wobbuild.fabfile import perform
+from wobbuild.services import perform
 
 app = Flask(__name__)
 app.logger.addHandler(gelf_handler)

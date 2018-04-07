@@ -1,9 +1,0 @@
-git_config_user: vagrant
-git_config:
-  user:
-    name: Ross Crawford-d'Heureuse
-    email: sendrossemail@gmail.com
-  core:
-    editor: vim
-  push:
-    default: current

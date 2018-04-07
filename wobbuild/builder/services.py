@@ -1,6 +1,6 @@
 import os
 import timy
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from jinja2 import Template
 

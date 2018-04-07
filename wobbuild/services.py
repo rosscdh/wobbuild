@@ -4,15 +4,13 @@ import ruamel.yaml as yaml
 import uuid
 import pprint
 
-from app_logger import logger
+from .app_logger import logger
 
 from jinja2 import Template
 
-from fabric.api import task
-
-from builder.handler import perform_pipeline
-from wobbuild.builder.services import BuilderService
-from wobbuild.settings import GLOBAL_VARS
+from .builder.handler import perform_pipeline
+from .builder.services import BuilderService
+from .settings import GLOBAL_VARS
 
 
 def perform(pipeline_yaml, is_async=False):
@@ -36,32 +34,28 @@ def perform(pipeline_yaml, is_async=False):
     return {'pipeline': pprint.pformat(pipeline_template)}
 
 
-@task
 def receive_pipeline(pipeline_yaml):
     perform(pipeline_yaml=pipeline_yaml)
 
 
-@task
 def read_pipeline(pipeline_yaml_path):
     if os.path.exists(pipeline_yaml_path):
         pipeline_yaml = open(pipeline_yaml_path, 'r').read()
         perform(pipeline_yaml=pipeline_yaml)
 
 
-@task
 def build(pipeline_yaml_path):
     if os.path.exists(pipeline_yaml_path):
         pipeline_yaml = open(pipeline_yaml_path, 'r').read()
         perform(pipeline_yaml=pipeline_yaml)
 
 
-@task
 def publish(pipeline_yaml_path):
     if os.path.exists(pipeline_yaml_path):
         pipeline_yaml = open(pipeline_yaml_path, 'r').read()
         perform(pipeline_yaml=pipeline_yaml)
 
-@task
+
 def deploy(pipeline_yaml_path):
     if os.path.exists(pipeline_yaml_path):
         pipeline_yaml = open(pipeline_yaml_path, 'r').read()
