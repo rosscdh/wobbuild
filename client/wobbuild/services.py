@@ -18,6 +18,8 @@ class WobbuildClientService:
     wob = None
 
     def __init__(self, wob, *args, **kwargs):
+        if not os.path.isfile(wob):
+            raise Exception('{} is not a file'.format(wob))
         self.wob = wob
 
     def perform(self, pipeline):
@@ -71,20 +73,16 @@ class WobbuildClientService:
         return send_pipeline
 
     def build(self):
-        if os.path.isfile(self.wob):
+        pipeline = self.get_pipeline()
 
-            pipeline = self.get_pipeline()
+        repo_dir = os.path.dirname(self.wob)
 
-            repo_dir = os.path.dirname(self.wob)
+        branch = self.git_brach(repo_dir)
 
-            branch = self.git_brach(repo_dir)
+        send_pipeline = self.compile_pipeline_to_send(pipeline=pipeline,
+                                                      branch=branch)
 
-            send_pipeline = self.compile_pipeline_to_send(pipeline=pipeline,
-                                                          branch=branch)
-
-            self.perform(pipeline=send_pipeline)
+        self.perform(pipeline=send_pipeline)
 
     def deploy(self):
-        if os.path.exists(self.wob):
-            pipeline_yaml = open(self.wob, 'r').read()
-            self.perform(pipeline_yaml=pipeline_yaml)
+        self.perform(pipeline_yaml=self.get_pipeline())
