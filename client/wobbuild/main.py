@@ -6,9 +6,7 @@ from wobbuild.services import WobbuildClientService
 
 
 @click.command()
-@click.option('--wob',
-              default='./wobbuild.yml',
-              help='Path to the .wobbuild.yml')
+@click.argument('wob', nargs=1)
 @click.option('--target',
               default='http://localhost:5000',
               help='The build server url. http://localhost:5000')

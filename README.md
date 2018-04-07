@@ -9,12 +9,6 @@ Publishes artifacts to an artifactory
 Integrates with Salt so that deploy orchestration calls can be made
 
 
-
-### Install
-
-1. `docker-compose up`
-
-
 ### Using it
 
 
@@ -22,7 +16,7 @@ Integrates with Salt so that deploy orchestration calls can be made
 2. browse to `http://localhost:5000` - This is the public interface
 3. install the client `cd client;python setup.py install`
 4. setup the .wobbuild.yml in the repo you would have built (copy wobbuild/wobbuid.example.yml)
-5. wobbuild --wob ../path/to/project/.wobbuild.yml --target http://localhost:5000
+5. wobbuild ../path/to/project/.wobbuild.yml --target http://localhost:5000
 
 
 ### In Projects
@@ -35,8 +29,7 @@ clean: false
 
 repo:
   name: my-patternlab-project
-  url: ssh://git@git.dglecom.net:7999/path/to/some/repo.git
-  branch: doc/packaging-deploy
+  url: ssh://git@git.example.net:7999/path/to/some/repo.git
 
 
 #
