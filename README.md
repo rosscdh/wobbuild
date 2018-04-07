@@ -20,7 +20,9 @@ Integrates with Salt so that deploy orchestration calls can be made
 
 1. `docker-compose up`
 2. browse to `http://localhost:5000` - This is the public interface
-3. `make wob path=/path/to/project/with/git/and/a/wobbuild.yml` __http posts a test yml file__ - This is the startings of the client that will be distributed
+3. install the client `cd client;python setup.py install`
+4. setup the .wobbuild.yml in the repo you would have built (copy wobbuild/wobbuid.example.yml)
+5. wobbuild --wob ../path/to/project/.wobbuild.yml --target http://localhost:5000
 
 
 ### In Projects
