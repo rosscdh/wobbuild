@@ -72,7 +72,14 @@
 {% raw %}
   var Build = React.createClass({
     componentDidMount: function() {
-      this.props.listen_channel.bind('new-build-log-' + this.props.build.slug, function(data) { console.log(data) });
+      this.props.listen_channel.bind('new-build', function(data) { 
+        console.log(data);
+        BuildsService.build(data.data.build_id)
+      });
+      this.props.listen_channel.bind('new-build-log-' + this.props.build.slug, function(data) { 
+        console.log(data.data);
+        BuildsService.build(data.build_id)
+      });
     },
     render: function() {
       var build = this.props.build;
