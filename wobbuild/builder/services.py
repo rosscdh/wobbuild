@@ -80,8 +80,8 @@ class BuilderService(object):
         self.build, is_new = Build.get_or_create(project=self.project, slug=str(self.build_id), status='created')
         self.build.pipeline = self.pipeline
         self.build.save()
-
-        self.pusher.send(channel=u'builds', event=u'new-build', data={'build_id': self.build.slug})
+        #import pdb;pdb.set_trace()
+        self.pusher.send(channel='builds', event='new-build', data={'build_id': self.build.slug})
 
         self.builds_path = context.get('builds_path')
         self.the_build_path = os.path.join(self.builds_path, self.repo.get('dir_name'), 'repo')

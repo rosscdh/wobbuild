@@ -21,5 +21,6 @@ services:
       - POXA_SECRET=secret
       - POXA_APP_ID=releaseminion
     ports:
+      - "4567:4567"
       - "8080:8080"
       - "8443:8443"

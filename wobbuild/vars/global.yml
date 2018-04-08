@@ -3,10 +3,10 @@ version: 0.0.1
 builds_path: /tmp/wobbuild
 push:
   app_id: '1'
-  key: '1234567890'
-  secret: 'wobbuild-secret'
-  host: 'localhost'
-  port: 4567
+  key: 'app_key'
+  secret: 'secret'
+  host: '192.168.0.102'
+  port: 8080
   ssl: false
 redis:
   backend: redis://localhost:6379/1

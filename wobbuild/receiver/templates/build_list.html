@@ -40,8 +40,8 @@
   var initialBuilds = {{ object_list|tojson|safe }};
 
   var PusherService = {
-    APP_KEY: '1234567890',
-    wsHost: '192.168.50.5',
+    APP_KEY: 'app_key',
+    wsHost: '127.0.0.1',
     wsPort: '8080',
     socket: function () {
       return new Pusher(this.APP_KEY, {
