@@ -3,7 +3,7 @@ version: 0.0.1
 builds_path: /tmp/wobbuild
 push:
   app_id: '1'
-  key: 1234567890
+  key: '1234567890'
   secret: 'wobbuild-secret'
   host: 'localhost'
   port: 4567

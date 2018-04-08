@@ -16,18 +16,20 @@ from pusher import Pusher
 from fabric.api import settings, lcd, local, shell_env
 
 from wobbuild.app_logger import logger
-
+from wobbuild.settings import GLOBAL_VARS
 from wobbuild.receiver.models import Project, Build
 from wobbuild.builder.exceptions import BuildFailedException
 
 timy_config.tracking_mode = TrackingMode.LOGGING
 
-PUSHER = Pusher(app_id=u'1',
-                key=u'1234567890',
-                secret=u'wobbuild-secret',
-                host=u'192.168.50.5',
-                port=4567,
-                ssl=False)
+# PUSHER = Pusher(app_id=u'1',
+#                 key=u'1234567890',
+#                 secret=u'wobbuild-secret',
+#                 host=u'192.168.50.5',
+#                 port=4567,
+#                 ssl=False)
+
+PUSHER = Pusher(**GLOBAL_VARS.get('push', {}))
 
 
 class PusherEvent(object):
