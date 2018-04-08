@@ -9,14 +9,31 @@ Publishes artifacts to an artifactory
 Integrates with Salt so that deploy orchestration calls can be made
 
 
-### Using it
+## Server - central web interface
 
 
 1. `docker-compose up`
 2. browse to `http://localhost:5000` - This is the public interface
-3. install the client `cd client;python setup.py install`
-4. setup the .wobbuild.yml in the repo you would have built (copy wobbuild/wobbuid.example.yml)
-5. wobbuild ../path/to/project/.wobbuild.yml --target http://localhost:5000
+
+
+## Client - machines that want things built
+
+Development
+
+`PYTHONPATH=$PYTHONPATH:$PWD python wobbuild/main.py ~/p/abridge-bot/.wobbuild.yml`
+
+Installed
+
+`cd client;python setup.py install`
+`wobbuild ~/p/abridge-bot/.wobbuild.yml --target http://localhost:5000`
+
+
+## Workers - machines that process builds
+
+start the worker (celery)
+
+1. `wobbuild worker --redis 127.0.0.1`
+
 
 
 ### In Projects
@@ -148,15 +165,6 @@ yes yes.. im not a designer. aint no body got time for dat.
 ![uggers](preview.png "Ugly Preview")
 
 
-## Client
-
-A docker image can be run to work like this
-
-`wob build:/Users/rosscdh/p/my-project/wobbuild.yml`
-
-Which will then build and publish artifacts that the developer can then
-
-`wob deploy:project-name.1.2.3`
 
 
 ## Todo
