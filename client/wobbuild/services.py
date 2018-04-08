@@ -27,10 +27,11 @@ class WobbuildClientService:
         url = DEFAULT_VARS.get('wobbuild').get('receiver').get('build')
 
         pipeline_yaml = yaml.dump(pipeline, Dumper=yaml.RoundTripDumper)
-
+        #import pdb;pdb.set_trace()
         headers = {
             'Content-Type': 'application/x-yaml'
         }
+
         resp = requests.post(url, data=pipeline_yaml, headers=headers)
 
         if resp.ok:
@@ -52,8 +53,9 @@ class WobbuildClientService:
         then return compile the new branch matcher
         """
         matched_build_group = 'master'
-        #print pipeline.get('build_group_matcher'), branch
-        for key, matcher in pipeline.get('build_group_matcher').iteritems():
+        #print(pipeline.get('build_group_matcher'), branch)
+
+        for key, matcher in pipeline.get('build_group_matcher').items():
             m = re.search(matcher, branch)
             if m:
                 matched_build_group = key

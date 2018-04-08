@@ -12,3 +12,14 @@ services:
     image: redis:4-alpine
     ports:
       - "6379:6379"
+
+  poxa:
+    image: edgurgel/poxa-automated:latest
+    environment:
+      - PORT=8080
+      - POXA_APP_KEY=app_key
+      - POXA_SECRET=secret
+      - POXA_APP_ID=releaseminion
+    ports:
+      - "8080:8080"
+      - "8443:8443"

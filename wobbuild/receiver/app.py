@@ -33,7 +33,7 @@ class ProjectsView(FlaskView):
 
         is_async = request.args.get('is_async', 'yes') in ['1', 'true', 'yes', 'y']
 
-        resp = perform(pipeline_yaml=request.data,
+        resp = perform(pipeline_yaml=request.data.decode('utf-8'),
                        is_async=is_async)
 
         return jsonify({'message': 'Thanks', 'resp': resp})

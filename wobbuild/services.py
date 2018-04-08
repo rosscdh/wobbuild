@@ -19,13 +19,14 @@ def perform(pipeline_yaml, is_async=False):
 
     logger.debug('performing pipeline', {'pipeline_yaml': pipeline_yaml, 'GLOBAL_VARS': GLOBAL_VARS, 'is_async': is_async})
 
-    #is_async = False
+    print(is_async)
+
     if is_async is True:
         # do it async
         perform_pipeline.delay(GLOBAL_VARS, pipeline_template)
     else:
         # do it sync for debugging
-        pipeline = yaml.load(pipeline_template, Loader=yaml.RoundTripLoader)  # used to be sent as yaml
+        pipeline = yaml.load(str(pipeline_template), Loader=yaml.RoundTripLoader)  # used to be sent as yaml
         service = BuilderService(build_id=str(uuid.uuid1())[:8],
                                  context=GLOBAL_VARS,
                                  pipeline=pipeline)
