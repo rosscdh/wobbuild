@@ -12,6 +12,8 @@ from .builder.handler import perform_pipeline
 from .builder.services import BuilderService
 from .settings import GLOBAL_VARS
 
+TRUTHY = ('1', 1, 't', 'True', 'true', True)
+
 
 def perform(pipeline_yaml, is_async=False):
     pipeline_template = Template(pipeline_yaml)
@@ -19,14 +21,14 @@ def perform(pipeline_yaml, is_async=False):
 
     logger.debug('performing pipeline', {'pipeline_yaml': pipeline_yaml, 'GLOBAL_VARS': GLOBAL_VARS, 'is_async': is_async})
 
-    print(is_async)
+    pipeline = yaml.load(str(pipeline_template), Loader=yaml.RoundTripLoader)  # used to be sent as yaml
+    is_async = pipeline.get('async', True) in TRUTHY
 
     if is_async is True:
         # do it async
         perform_pipeline.delay(GLOBAL_VARS, pipeline_template)
     else:
         # do it sync for debugging
-        pipeline = yaml.load(str(pipeline_template), Loader=yaml.RoundTripLoader)  # used to be sent as yaml
         service = BuilderService(build_id=str(uuid.uuid1())[:8],
                                  context=GLOBAL_VARS,
                                  pipeline=pipeline)

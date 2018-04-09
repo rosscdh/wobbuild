@@ -1,10 +1,6 @@
 language: java
 clean: false
-
-repo:
-  name: rwd-douglas-pattern
-  url: ssh://git@git.dglecom.net:7999/fron/rwd-douglas-pattern.git
-  branch: doc/packaging-deploy
+async: true
 
 #
 # Vars gets merged with the GLOBAL_VARS params

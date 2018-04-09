@@ -1,4 +1,4 @@
 wobbuild:
   receiver:
-    build: http://192.168.0.102:5000/?is_async=1
+    build: http://192.168.0.102:5000/
     deploy: http://192.168.0.102:5000/deploy
