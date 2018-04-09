@@ -35,3 +35,4 @@ virtualenv/*
 build
 dist
 *-egg-info
+*.egg-info

@@ -35,8 +35,8 @@ Development
 
 **OR Installed**
 
-`cd client;python setup.py install`
-`wobbuild ~/p/abridge-bot/.wobbuild.yml --target http://localhost:5000`
+1. `cd client;python setup.py install`
+2. `wobbuild ~/p/abridge-bot/.wobbuild.yml --target http://localhost:5000`
 
 
 ## 3/3 Workers - machines that process builds
