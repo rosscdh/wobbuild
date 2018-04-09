@@ -43,10 +43,7 @@ Copy this example into one of your projects
 ```
 language: java
 clean: false
-
-repo:
-  name: my-patternlab-project
-  url: ssh://git@git.example.net:7999/path/to/some/repo.git
+async: true
 
 
 #
