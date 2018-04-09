@@ -19,12 +19,9 @@ As a developer I want:
 
 
 1. `docker-compose up`
-2. browse to `http://localhost:5000` - This is the public interface
-
-**OR Installed**
-
-1. `python setup.py install`
-2. `wobserver start`
+2. `python setup.py install`
+3. `wobserver start`
+4. browse to `http://localhost:5000` - This is the public interface
 
 
 ## 2/3 Client - machines that want things built
