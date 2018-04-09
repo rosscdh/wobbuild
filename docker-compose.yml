@@ -1,12 +1,12 @@
 version: '3'
 
 services:
-  web:
-    build:
-      context: ./wobbuild
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
+  # web:
+  #   build:
+  #     context: ./wobbuild
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5000:5000"
 
   redis:
     image: redis:4-alpine
