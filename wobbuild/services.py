@@ -26,7 +26,7 @@ def perform(pipeline_yaml, is_async=False):
 
     if is_async is True:
         # do it async
-        perform_pipeline.delay(GLOBAL_VARS, pipeline_template)
+        perform_pipeline.delay(GLOBAL_VARS, pipeline)
     else:
         # do it sync for debugging
         service = BuilderService(build_id=str(uuid.uuid1())[:8],

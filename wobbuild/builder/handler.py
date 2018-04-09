@@ -50,9 +50,9 @@ class PusherEvent(object):
 
 pusher = PusherEvent()
 
+
 @celery_app.task(bind=True)
-def perform_pipeline(self, context, pipeline_template):
-    pipeline = yaml.load(pipeline_template, Loader=yaml.RoundTripLoader)  # used to be sent as yaml
+def perform_pipeline(self, context, pipeline):
     service = BuilderService(build_id=self.request.id,
                              context=context,
                              pipeline=pipeline)
