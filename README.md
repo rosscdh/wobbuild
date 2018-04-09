@@ -1,22 +1,28 @@
 # ![wobbly](wobbuild.png "Wobbuild") wobbuild
 
-Yet another simple build and deploy system.
+A simple build tool.
 
 A bit like travis, but simpler and Open Source.
 
-But this one, can be run by developers so that build time is not centralised.
-Publishes artifacts to an artifactory
-Integrates with Salt so that deploy orchestration calls can be made
+Concept: build tools suck or are expensive and clicky-draggy
+
+As a developer I want:
+
+1. a simply yaml format configuration for builds
+2. a cheap open-source build tool
+3. not too clicky-draggy
+4. decentralised workers that can be run on any machine (allow a swarm of developers to build their own software without relying on a central limited (expensive) set)
+5. shell based, so that we can docker all the things
 
 
-## Server - central web interface
+## 1/3 Server - central web interface
 
 
 1. `docker-compose up`
 2. browse to `http://localhost:5000` - This is the public interface
 
 
-## Client - machines that want things built
+## 2/3 Client - machines that want things built
 
 Development
 
@@ -28,7 +34,7 @@ Installed
 `wobbuild ~/p/abridge-bot/.wobbuild.yml --target http://localhost:5000`
 
 
-## Workers - machines that process builds
+## 3/3 Workers - machines that process builds
 
 start the worker (celery)
 
