@@ -64,10 +64,13 @@ class WobbuildClientService:
         build = pipeline.get(matched_build_group)
         assert build, 'No build_group_matcher was found based on the current branch: {branch}'.format(branch=branch)
 
+        repo = pipeline.get('repo')
+        repo['branch'] = branch
+
         send_pipeline = {
             'language': pipeline.get('language'),
             'clean': pipeline.get('clean'),
-            'repo': pipeline.get('repo'),
+            'repo': repo,
             'vars': pipeline.get('vars'),
             'build_group_matcher': pipeline.get('build_group_matcher'),
             'build': build
