@@ -21,14 +21,19 @@ As a developer I want:
 1. `docker-compose up`
 2. browse to `http://localhost:5000` - This is the public interface
 
+**OR Installed**
+
+1. `python setup.py install`
+2. `wobserver start`
+
 
 ## 2/3 Client - machines that want things built
 
 Development
 
-`PYTHONPATH=$PYTHONPATH:$PWD python wobbuild/main.py ~/p/abridge-bot/.wobbuild.yml`
+`cd client;PYTHONPATH=$PYTHONPATH:$PWD python client/wobbuild/main.py ~/p/abridge-bot/.wobbuild.yml`
 
-Installed
+**OR Installed**
 
 `cd client;python setup.py install`
 `wobbuild ~/p/abridge-bot/.wobbuild.yml --target http://localhost:5000`
@@ -38,7 +43,8 @@ Installed
 
 start the worker (celery)
 
-1. `wobbuild worker --redis 127.0.0.1`
+1. `python setup.py install`
+2. `wobbuilder start --broker http://localhost:6379 --loglevel debug`
 
 
 

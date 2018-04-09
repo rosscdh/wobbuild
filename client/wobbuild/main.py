@@ -25,7 +25,7 @@ def wobbuild(wob, target):
 
     print(wob)
     print(target)
-    service = WobbuildClientService(wob=wob)
+    service = WobbuildClientService(wob=wob, target=target)
     service.build()
 
 if __name__ == '__main__':

@@ -24,13 +24,15 @@ class WobbuildClientService:
     wob = None
 
     def __init__(self, wob, *args, **kwargs):
+        self.receiver = kwargs.get('target', DEFAULT_VARS.get('wobbuild').get('receiver').get('build'))
+
         if not os.path.isfile(wob):
             raise Exception('{} is not a file'.format(wob))
         self.wob = wob
 
     def perform(self, pipeline):
         # send to web-reciever
-        url = DEFAULT_VARS.get('wobbuild').get('receiver').get('build')
+        url = self.receiver
 
         pipeline_yaml = yaml.dump(pipeline, Dumper=yaml.RoundTripDumper)
         #import pdb;pdb.set_trace()
@@ -89,6 +91,7 @@ class WobbuildClientService:
         pipeline_vars.update({
             'user': os.getenv('USER'),
             'home': os.getenv('HOME'),
+            'receiver': self.receiver,
         })
 
         send_pipeline = {
