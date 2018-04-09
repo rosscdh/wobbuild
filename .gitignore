@@ -32,3 +32,6 @@ assets/*
 .vagrant/*
 playbooks/vagrant.retry
 virtualenv/*
+build
+dist
+*-egg-info

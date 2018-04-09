@@ -1,0 +1,17 @@
+Fabric3
+Flask
+honcho
+djehouty
+ruamel.yaml
+redis
+requests
+Werkzeug
+flask-pw
+flask-classy
+timy
+gitpython
+flask-marshmallow
+python-json-logger
+pusher
+flask-restful
+celery

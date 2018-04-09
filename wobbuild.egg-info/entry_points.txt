@@ -1,0 +1,4 @@
+[console_scripts]
+wobbuilder = wobbuild.builder.cli:cli
+wobserver = wobbuild.receiver.cli:cli
+

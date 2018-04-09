@@ -1,0 +1,2 @@
+include wobbuild/*.yml
+include wobbuild/*.txt

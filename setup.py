@@ -2,7 +2,7 @@ import os
 from setuptools import setup, find_packages
 from pip.req import parse_requirements
 
-install_reqs = parse_requirements(os.path.join(os.path.dirname(__file__), 'requirements.txt'), session=False)
+install_reqs = parse_requirements(os.path.join(os.path.dirname(__file__), 'wobbuild', 'requirements.txt'), session=False)
 REQUIREMENTS = [str(ir.req) for ir in install_reqs]
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
@@ -15,7 +15,7 @@ VERSION = os.getenv('RELEASE_VERSION', '0.0.1')
 
 
 setup(
-    name='wobbuild-client',
+    name='wobbuild',
     version=VERSION,
     packages=find_packages(),
     include_package_data=True,
@@ -34,6 +34,7 @@ setup(
         'Topic :: Internet :: DevOps :: Build Systems',
     ],
     entry_points={'console_scripts': [
-        'wobbuild = wobbuild.main:wobbuild',
+        'wobbuilder = wobbuild.builder.cli:cli',
+        'wobserver = wobbuild.receiver.cli:cli',
     ], },
 )
