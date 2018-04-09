@@ -1,4 +1,4 @@
-# wobbuild
+# ![wobbly](wobbuild.png "Wobbuild") wobbuild
 
 Yet another simple build and deploy system.
 
