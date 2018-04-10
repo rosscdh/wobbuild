@@ -68,19 +68,10 @@
       return axios.get( this.uri + '/' + slug )
     }
   }
-  console.log(BuildsService.initial())
+
+  //console.log(BuildsService.initial())
 {% raw %}
   var Build = React.createClass({
-    componentDidMount: function() {
-      this.props.listen_channel.bind('new-build', function(data) { 
-        console.log(data);
-        BuildsService.build(data.data.build_id)
-      });
-      this.props.listen_channel.bind('new-build-log-' + this.props.build.slug, function(data) { 
-        console.log(data.data);
-        BuildsService.build(data.build_id)
-      });
-    },
     render: function() {
       var build = this.props.build;
       return (
@@ -88,7 +79,7 @@
           <div className="panel">
             <div className="panel-heading">
               <h3 className="panel-title">
-                <a href={ build.repo.url }>{ build.project.name }@{ build.repo.branch }</a>
+                <a href={ build.repo.url }>{ build.project.name }@{ build.slug }</a>
                 <span className="pull-right text-right"><i className="material-icons">flight takeoff</i></span>
               </h3>
             </div>
@@ -116,21 +107,21 @@
         this.listen_channel = this.socket.subscribe('builds');
         return { 'builds': BuildsService.initial().map(obj => <Build key={obj.slug} listen_channel={this.listen_channel} build={obj}/>) };
     },
-    componentDidMount: function() {
-      /**
-      * Collect Builds
-      */
-      // var buildsProvider = BuildsService.builds();
-      // buildsProvider.then(res => {
-      //   var builds = res.data.map(obj => <Build key={obj.slug} build={obj}/>);
-      //   this.setState({
-      //     'builds': builds
-      //   });
-      // });
-      /**
-      * Handle sockets here
-      */
-      this.listen_channel.bind('new-build', function(data) { console.log(data) });
+    componentWillMount: function() {
+      this.listen_channel.bind('new-build', function(data) { 
+        console.log('new-build');
+        var build = BuildsService.build(data.data.build_id)
+        build.then(function (resp) { console.log(resp) })
+      });
+      this.listen_channel.bind('build-log', function(data) { 
+        console.log('new-build-log');
+        console.log(data.data);
+      });
+      this.listen_channel.bind('build-complete', function(data) { 
+        console.log('build-complete');
+        var build = BuildsService.build(data.data.build_id)
+        build.then(function (resp) { console.log(resp) })
+      });
     },
     render: function() {
       return (<div className="row">{this.state.builds}</div>)

@@ -88,7 +88,15 @@ class BuilderService(object):
 
     def process(self):
         self.init_project()
-        return self.build_the_pipeline()
+        self.build_the_pipeline()
+        return self.finalise()
+
+    def finalise(self):
+        #self.pusher.send(channel='builds', event='complete-build', data={'build_id': self.build.slug, 'pipeline': self.pipeline})
+        return {'log': self.BUILD_LOG,
+                'slug': self.build.slug,
+                'pipeline': self.pipeline,
+                'receiver': self.pipeline.get('vars', {}).get('receiver')}
 
     def init_project(self):
         """
@@ -228,12 +236,14 @@ class BuilderService(object):
 
             # Set the environment Variables
             env_variables = self.pipeline.get('vars')
+
             if not env_variables:
                 env_variables = {}
-            #env_variables.update(self.context)
+
             env_variables.update({
                 'has_failed': str(self.has_failed) if self.has_failed else '0',
             })
+
             self.logger.debug('set env_variables {env_variables}'.format(env_variables=env_variables), env_variables)
 
             # Turn the step into a jinja template
@@ -257,8 +267,7 @@ class BuilderService(object):
         event = {
             'step_type': step_type,
             'step': step,
-            'result': result.stdout,
-            'error': result.stderr,
+            'message': result.stdout or result.stderr,
             'is_successful': is_successful,
             'return_code': return_code,
             'took': took,
@@ -270,11 +279,9 @@ class BuilderService(object):
 
         # oh we failed.. set the status
         if is_successful is False:
-            self.build.status = 'failure' 
+            self.build.status = 'failure'
 
-        #self.build.save()
         query = Build.update(step_logs=self.BUILD_LOG, status=self.build.status).where(id==self.build.id)
         query.execute()
         # cant send whole event "too much data" L()
-        self.pusher.send(channel=u'builds', event=u'new-build-log-{slug}'.format(slug=self.build.slug), data={'build_id': self.build.slug, 'step_type': step_type, 'is_successful': is_successful, 'return_code': return_code, 'took': took, 'pipeline': self.pipeline})
-
+        self.pusher.send(channel=u'builds', event=u'build-log', data={'build_id': self.build.slug, 'step_type': step_type, 'is_successful': is_successful, 'return_code': return_code, 'took': took, 'step': step, 'result': event.get('message')})

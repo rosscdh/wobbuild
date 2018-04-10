@@ -23,8 +23,8 @@ class BuildSchema(ma.Schema):
             'slug',
             'project',
             'dateof',
-            # 'pipeline',
-            # 'step_logs',
+            'pipeline',
+            'step_logs',
             'repo',
             'status',
         )

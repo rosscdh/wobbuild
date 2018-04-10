@@ -1,8 +1,14 @@
 from flask import jsonify
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 from wobbuild.receiver.models import Build
 from wobbuild.receiver.serializers import build_schema, builds_schema
+
+parser = reqparse.RequestParser()
+parser.add_argument('log')
+parser.add_argument('slug')
+parser.add_argument('pipeline')
+parser.add_argument('receiver')
 
 
 class BuildList(Resource):
@@ -22,4 +28,14 @@ class BuildDetail(Resource):
     def get(self, slug):
         build = self.get_object(slug=slug)
         res = build_schema.dump(build)
+        return jsonify(res.data)
+
+    def post(self, slug):
+        args = parser.parse_args()
+        build = self.get_object(slug=slug)
+        build.step_logs = args.get('log')
+        build.status = 'success'
+        build.save()
+        res = build_schema.dump(build)
+        #import pdb;pdb.set_trace()
         return jsonify(res.data)
