@@ -1,6 +1,7 @@
 from elasticsearch import Elasticsearch#, helpers as es_helpers
 
-mapping = {
+
+builds_mapping = {
     "mappings": {
         "slug": {"type": "string"},
         "project": {"type": "string"},
@@ -12,12 +13,17 @@ mapping = {
     }
 }
 
+projects_mapping = {}
+
+
 es = Elasticsearch(["http://127.0.0.1:9200"])
+
 es._builds_index = 'builds'
+es._projects_index = 'projects'
+
 es.indices.create(index=es._builds_index,
                   ignore=400,
-                  body=mapping)
-
-# es.index(index=es._builds_index,
-#          doc_type="build",
-#          body=build_schema.jsonify(build))
+                  body=builds_mapping)
+es.indices.create(index=es._projects_index,
+                  ignore=400,
+                  body=projects_mapping)

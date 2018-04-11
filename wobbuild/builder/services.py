@@ -1,8 +1,9 @@
 import os
 import timy
-from urllib.parse import urlparse
 
+from urllib.parse import urlparse
 from jinja2 import Template
+from celery.contrib import rdb
 
 from collections import OrderedDict
 
@@ -73,6 +74,7 @@ class BuilderService(object):
         self.repo['dir_name'], ext = os.path.splitext(os.path.basename(os.path.normpath(url.path)))
         self.logger.debug('Repo dir_name: %s extension: %s' % (self.repo['dir_name'], ext))
 
+        rdb.set_trace()
         self.project, is_new = Project.get_or_create(name=self.repo.get('name'))
         self.project.data = self.repo
         self.project.save()

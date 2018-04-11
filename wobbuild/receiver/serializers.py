@@ -37,3 +37,6 @@ class BuildSchema(ma.Schema):
 
 build_schema = BuildSchema()
 builds_schema = BuildSchema(many=True)
+
+project_schema = ProjectSchema()
+projects_schema = ProjectSchema(many=True)

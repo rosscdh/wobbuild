@@ -4,14 +4,15 @@
 {% raw %}
 
 
-
 <div class="row">
     <div class="col-md-12">
-      <h2>Latest Builds</h2>
+      <h2>Projects</h2>
     </div>
+      <div id="projects_container"></div>
+</div>
 
+<div class="row">
       <div id="container"></div>
-
 </div>
 
 <div id="modal-logs" class="modal">
@@ -37,8 +38,6 @@
 <script type="text/babel">
   var destination = document.querySelector("#container");
 
-  var initialBuilds = {{ object_list|tojson|safe }};
-
   var PusherService = {
     APP_KEY: 'app_key',
     wsHost: '127.0.0.1',
@@ -59,7 +58,21 @@
     uri: '/api/builds',
 
     initial: function () {
-      return initialBuilds;
+      return {{ object_list|tojson|safe }};
+    },
+    builds: function () {
+      return axios.get( this.uri )
+    },
+    build: function (slug) {
+      return axios.get( this.uri + '/' + slug )
+    }
+  }
+
+  var ProjectsService = {
+    uri: '/api/projects',
+
+    initial: function () {
+      return {{ projects_list|tojson|safe }};
     },
     builds: function () {
       return axios.get( this.uri )
@@ -71,6 +84,36 @@
 
   //console.log(BuildsService.initial())
 {% raw %}
+  var Project = React.createClass({
+    render: function() {
+      var project = this.props.project;
+      return (
+        <div className="col-md-2">
+          <div className="panel">
+            <div className="panel-heading">
+              <h3 className="panel-title">
+                <a name="">{ project.name }</a>
+              </h3>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  });
+
+  var Projects = React.createClass({
+    getInitialState: function() {
+        this.socket = PusherService.socket();
+        this.listen_channel = this.socket.subscribe('projects');
+        return { 'projects': ProjectsService.initial().map(obj => <Project key={obj.name} listen_channel={this.listen_channel} project={obj}/>) };
+    },
+    componentWillMount: function() {
+    },
+    render: function() {
+      return (<div className="row">{this.state.projects}</div>)
+    }
+  });
+
   var Build = React.createClass({
     render: function() {
       var build = this.props.build;
@@ -92,7 +135,7 @@
               <p>
               Build time: { build.dateof }
               </p>
-              <button type="button" className="btn btn-block btn-danger" data-build_slug="{ build.slug }" data-toggle="modal" data-target="#modal-logs">View Failed<div className="ripple-container"></div></button>
+              <button type="button" className="btn btn-block btn-danger" data-build_slug="{ build.slug }" data-toggle="modal" data-target="#modal-logs">View<div className="ripple-container"></div></button>
               <button type="button" className="btn btn-block btn-xs btn-info">Re-Run Build</button>
             </div>
           </div>
@@ -124,13 +167,14 @@
       });
     },
     render: function() {
-      return (<div className="row">{this.state.builds}</div>)
+      return (<div className="row"><div className="col-md-12"><h2>Builds</h2></div>{this.state.builds}</div>)
     }
   });
 
   function App() {
     return (
       <div>
+        <Projects />
         <Builds />
       </div>
     );
