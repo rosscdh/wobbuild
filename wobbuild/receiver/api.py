@@ -45,7 +45,3 @@ class BuildDetail(Resource):
                            body=res.data)
         #import pdb;pdb.set_trace()
         return jsonify(res.data)
-        res = build_schema.dump(build)
-
-        #import pdb;pdb.set_trace()
-        return jsonify(res.data)
