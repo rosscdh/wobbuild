@@ -13,6 +13,12 @@ services:
     ports:
       - "6379:6379"
 
+  elasticsearch:
+    image: elasticsearch:2-alpine
+    ports: 
+      - "9200:9200"
+      - "9300:9300"
+
   poxa:
     image: edgurgel/poxa-automated:latest
     environment:

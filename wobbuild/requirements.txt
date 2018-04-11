@@ -3,6 +3,7 @@ Flask
 honcho
 djehouty
 ruamel.yaml
+pyyaml
 redis
 requests
 Werkzeug
@@ -15,3 +16,5 @@ python-json-logger
 pusher
 flask-restful
 celery
+elasticsearch
+Luqum
